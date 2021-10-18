@@ -1,13 +1,14 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:converters="clr-namespace:PracticalControls.Converters">
 
 
-    <DataTemplate x:Key="dgTreeColumn">
+    <DataTemplate x:Key="dgTreeColumnTemplate">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto" SharedSizeGroup="share"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <FrameworkElement Width="{Binding Level,Converter={x:Static converters:LevelToWidthConverter.Instance}}"/>
@@ -16,6 +17,12 @@
                           Visibility="{Binding Children.Count,Converter={x:Static converters:ZeroToVisibilityConverter.InstanceWidthHidden}}"
                           Style="{DynamicResource MahApps.Styles.ToggleButton.TreeViewItem.ExpandCollapse}"/>
             <TextBlock x:Name="tbContent" Grid.Column="2" Text="{Binding Text,RelativeSource={RelativeSource TemplatedParent}}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="dgTreeColumnEditingTemplate">
+        <Grid>
+            <TextBox x:Name="tbxContent" mah:TextBoxHelper.ClearTextButton="True"/>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

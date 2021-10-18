@@ -26,7 +26,7 @@
                 </GroupStyle>
             </DataGrid.GroupStyle>
             <DataGrid.Columns>
-                <pc:DataGridTreeColumn Binding="{Binding Name}" Width="*"/>
+                <pc:DataGridTreeColumn Header="名称" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="类型" Binding="{Binding Type}" Width="*"/>
                 <DataGridTextColumn Header="值" Binding="{Binding Value}" Width="*"/>
             </DataGrid.Columns>

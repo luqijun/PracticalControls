@@ -56,7 +56,9 @@ namespace PracticalControls.Controls
 
         public DataGridTreeColumn()
         {
-            this.CellTemplate = Application.Current.FindResource("dgTreeColumn") as DataTemplate;
+            this.CellTemplate = Application.Current.FindResource("dgTreeColumnTemplate") as DataTemplate;
+
+            this.CellEditingTemplate= Application.Current.FindResource("dgTreeColumnEditingTemplate") as DataTemplate;
         }
 
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
@@ -73,6 +75,18 @@ namespace PracticalControls.Controls
             Binding binding = new Binding("RefreshCollectionViewCommand") { Source = this };
             toggleButton?.SetBinding(ToggleButton.CommandProperty, binding);
             toggleButton?.SetBinding(ToggleButton.CommandParameterProperty, new Binding("IsChecked") { Source = toggleButton });
+
+            return element;
+        }
+
+        protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
+        {
+            var element = base.GenerateEditingElement(cell, dataItem) as ContentPresenter;
+            element.ApplyTemplate();
+
+            //绑定显示内容
+            TextBox tbContent = (TextBox)element.ContentTemplate.FindName("tbxContent", element);
+            tbContent?.SetBinding(TextBox.TextProperty, Binding);
 
             return element;
         }
