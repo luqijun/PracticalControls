@@ -50,8 +50,6 @@ namespace PracticalControls.Demo.Models
             _value = value;
             this.Level = level;
             this.IsVisible = isVisible;
-
-            this.IsExpanded = true;
         }
     }
 }

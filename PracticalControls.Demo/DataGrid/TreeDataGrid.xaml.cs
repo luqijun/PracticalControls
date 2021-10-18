@@ -35,14 +35,15 @@ namespace PracticalControls.Demo.DataGrid
 
     public class TreeDataGridViewModel : ViewModelBase
     {
-        public ICollectionView LstDataGridItemView { get; set; }
 
-        private ObservableCollection<DataGridItem> _lstDataGridItem;
+        public List<DataGridItem> LstDataGridItem { get; set; }
 
-        public ObservableCollection<DataGridItem> LstDataGridItem
+        private ICollectionView _lstDataGridItemView;
+
+        public ICollectionView LstDataGridItemView
         {
-            get { return _lstDataGridItem; }
-            set { Set(ref _lstDataGridItem, value); }
+            get { return _lstDataGridItemView; }
+            set { _lstDataGridItemView = value; }
         }
 
         private DataGridItem _selDataGridItem;
@@ -63,22 +64,24 @@ namespace PracticalControls.Demo.DataGrid
 
             for (int i = 0; i < 3; i++)
             {
-                lstResult.Add(new DataGridItem("Grade" + i, "Type1", "v1", 0, true) { GroupName = "Group" + i });
+                lstResult.Add(new DataGridItem("Grade" + i, "Type1", "v1", 0, true) { GroupName = "Group" + i, IsExpanded = true });
                 for (int j = 0; j < 4; j++)
                 {
-                    lstResult.Add(new DataGridItem("Grade" + j, "Type1", "v1", 1, true));
+                    lstResult.Add(new DataGridItem("Grade" + j, "Type1", "v1", 1, true) { GroupName = "Group" + i });
                     for (int k = 0; k < 1000; k++)
                     {
-                        lstResult.Add(new DataGridItem("Grade" + k, "Type1", "v1", 2, true));
+                        lstResult.Add(new DataGridItem("Grade" + k, "Type1", "v1", 2, false) { GroupName = "Group" + i });
                     }
                 }
             }
 
-            this.LstDataGridItem = new ObservableCollection<DataGridItem>(lstResult);
+            this.LstDataGridItem = lstResult;
             TreeDataGridHelper.ResetRelationShip(this.LstDataGridItem);
 
             this.LstDataGridItemView = CollectionViewSource.GetDefaultView(this.LstDataGridItem);
             this.LstDataGridItemView.Filter = o => (o as TreeDataGridItemBase).IsVisible;
+
+            //分组
             this.LstDataGridItemView.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
         }
     }
