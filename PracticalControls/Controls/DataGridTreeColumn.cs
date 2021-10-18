@@ -54,15 +54,21 @@ namespace PracticalControls.Controls
                 cv.Refresh();
         }
 
+        #region 构造函数
+
         public DataGridTreeColumn()
         {
-            this.CellTemplate = Application.Current.FindResource("dgTreeColumnTemplate") as DataTemplate;
 
-            this.CellEditingTemplate= Application.Current.FindResource("dgTreeColumnEditingTemplate") as DataTemplate;
         }
+
+        #endregion
+
+        #region 生成Cell元素
 
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {
+            SetCellTemplate();
+
             var element = base.GenerateElement(cell, dataItem) as ContentPresenter;
             element.ApplyTemplate();
 
@@ -81,6 +87,8 @@ namespace PracticalControls.Controls
 
         protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
         {
+            SetCellEditingTemplate();
+
             var element = base.GenerateEditingElement(cell, dataItem) as ContentPresenter;
             element.ApplyTemplate();
 
@@ -90,5 +98,23 @@ namespace PracticalControls.Controls
 
             return element;
         }
+
+        #endregion
+
+        #region 若模板为空，则自动使用默认模板
+
+        private void SetCellTemplate()
+        {
+            if (this.CellTemplate == null)
+                this.CellTemplate = Application.Current.FindResource("dgTreeColumnTemplate") as DataTemplate;
+        }
+
+        private void SetCellEditingTemplate()
+        {
+            if (this.CellEditingTemplate == null)
+                this.CellEditingTemplate = Application.Current.FindResource("dgTreeColumnEditingTemplate") as DataTemplate;
+        }
+
+        #endregion
     }
 }
