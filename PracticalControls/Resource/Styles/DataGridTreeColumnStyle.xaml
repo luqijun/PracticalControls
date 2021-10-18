@@ -1,0 +1,21 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:PracticalControls.Converters">
+
+
+    <DataTemplate x:Key="dgTreeColumn">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="share"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <FrameworkElement Width="{Binding Level,Converter={x:Static converters:LevelToWidthConverter.Instance}}"/>
+            <ToggleButton x:Name="expander" Grid.Column="1" ClickMode="Press"
+                          IsChecked="{Binding Path=IsExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                          Visibility="{Binding Children.Count,Converter={x:Static converters:ZeroToVisibilityConverter.InstanceWidthHidden}}"
+                          Style="{DynamicResource MahApps.Styles.ToggleButton.TreeViewItem.ExpandCollapse}"/>
+            <TextBlock x:Name="tbContent" Grid.Column="2" Text="{Binding Text,RelativeSource={RelativeSource TemplatedParent}}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>
