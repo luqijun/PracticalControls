@@ -12,11 +12,4 @@ namespace PracticalControls.Interfaces
 
         public List<object> Children { get; set; }
     }
-
-    interface IParentChildren<T>
-    {
-        public T Parent { get; set; }
-
-        public IList<T> Children { get; set; }
-    }
 }

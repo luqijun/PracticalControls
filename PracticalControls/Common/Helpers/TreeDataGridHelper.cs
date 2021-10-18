@@ -9,6 +9,10 @@ namespace PracticalControls.Common.Helpers
 {
     public class TreeDataGridHelper
     {
+        /// <summary>
+        /// 根据级别设置父子关系
+        /// </summary>
+        /// <param name="lstData"></param>
         public static void ResetRelationShip(IEnumerable<TreeDataGridItemBase> lstData)
         {
             if (!lstData.Any())

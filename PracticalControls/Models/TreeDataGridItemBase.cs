@@ -70,6 +70,11 @@ namespace PracticalControls.Models
         }
         #endregion
 
+        /// <summary>
+        /// 收缩展开时 递归设置显示隐藏
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="isVisible"></param>
         protected void UpdateChildrenVisibility(TreeDataGridItemBase data, bool isVisible)
         {
             foreach (TreeDataGridItemBase child in data.Children)

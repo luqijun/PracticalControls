@@ -42,6 +42,10 @@ namespace PracticalControls.Controls
         public RelayCommand<bool?> RefreshCollectionViewCommand =>
             _refreshCollectionViewCommand ?? (_refreshCollectionViewCommand = new RelayCommand<bool?>(ExecuteRefreshCollectionViewCommand));
 
+        /// <summary>
+        /// 刷新ICollectionView对象
+        /// </summary>
+        /// <param name="isExpanded"></param>
         private void ExecuteRefreshCollectionViewCommand(bool? isExpanded)
         {
             this.DataGridOwner.FinishingEditing();
@@ -59,13 +63,16 @@ namespace PracticalControls.Controls
         {
             var element = base.GenerateElement(cell, dataItem) as ContentPresenter;
             element.ApplyTemplate();
-            TextBlock tbContent = (TextBlock)element.ContentTemplate.FindName("tbContent", element);
-            tbContent.SetBinding(TextBlock.TextProperty, Binding);
 
+            //绑定显示内容
+            TextBlock tbContent = (TextBlock)element.ContentTemplate.FindName("tbContent", element);
+            tbContent?.SetBinding(TextBlock.TextProperty, Binding);
+
+            //绑定收缩展开事件
             ToggleButton toggleButton = (ToggleButton)element.ContentTemplate.FindName("expander", element);
             Binding binding = new Binding("RefreshCollectionViewCommand") { Source = this };
-            toggleButton.SetBinding(ToggleButton.CommandProperty, binding);
-            toggleButton.SetBinding(ToggleButton.CommandParameterProperty, new Binding("IsChecked") { Source = toggleButton });
+            toggleButton?.SetBinding(ToggleButton.CommandProperty, binding);
+            toggleButton?.SetBinding(ToggleButton.CommandParameterProperty, new Binding("IsChecked") { Source = toggleButton });
 
             return element;
         }
