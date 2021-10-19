@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using PracticalControls.Common.Helpers;
 using PracticalControls.Extensions;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace PracticalControls.Controls
 {
@@ -54,7 +56,7 @@ namespace PracticalControls.Controls
                 cv.Refresh();
         }
 
-        #region 构造函数
+        #region Constructor
 
         public DataGridTreeColumn()
         {
@@ -63,7 +65,7 @@ namespace PracticalControls.Controls
 
         #endregion
 
-        #region 生成Cell元素
+        #region Element Generation
 
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {
@@ -101,6 +103,70 @@ namespace PracticalControls.Controls
 
         #endregion
 
+        #region Editing
+
+        protected override object PrepareCellForEdit(FrameworkElement editingElement, RoutedEventArgs editingEventArgs)
+        {
+            TextBox textBox = UIHelper.FindDescendant<TextBox>(editingElement, null, true);
+            if (textBox != null)
+            {
+                textBox.Focus();
+
+                string originalValue = textBox.Text;
+
+                TextCompositionEventArgs textArgs = editingEventArgs as TextCompositionEventArgs;
+                if (textArgs != null)
+                {
+                    // If text input started the edit, then replace the text with what was typed.
+                    string inputText = ConvertTextForEdit(textArgs.Text);
+                    textBox.Text = inputText;
+
+                    // Place the caret after the end of the text.
+                    textBox.Select(inputText.Length, 0);
+                }
+                else
+                {
+                    // If a mouse click started the edit, then place the caret under the mouse.
+                    MouseButtonEventArgs mouseArgs = editingEventArgs as MouseButtonEventArgs;
+                    if ((mouseArgs == null) || !PlaceCaretOnTextBox(textBox, Mouse.GetPosition(textBox)))
+                    {
+                        // If the mouse isn't over the textbox or something else started the edit, then select the text.
+                        textBox.SelectAll();
+                    }
+                }
+
+                return originalValue;
+            }
+
+            return base.PrepareCellForEdit(editingElement, editingEventArgs);
+        }
+
+        // convert text the user has typed into the appropriate string to enter into the editable TextBox
+        string ConvertTextForEdit(string s)
+        {
+            // Backspace becomes the empty string
+            if (s == "\b")
+            {
+                s = string.Empty;
+            }
+
+            return s;
+        }
+
+        private static bool PlaceCaretOnTextBox(TextBox textBox, Point position)
+        {
+            int characterIndex = textBox.GetCharacterIndexFromPoint(position, /* snapToText = */ false);
+            if (characterIndex >= 0)
+            {
+                textBox.Select(characterIndex, 0);
+                return true;
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #region 若模板为空，则自动使用默认模板
 
         private void SetCellTemplate()
@@ -116,5 +182,7 @@ namespace PracticalControls.Controls
         }
 
         #endregion
+
+
     }
 }

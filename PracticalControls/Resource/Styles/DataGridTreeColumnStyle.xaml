@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:converters="clr-namespace:PracticalControls.Converters">
 
 
@@ -22,7 +21,7 @@
 
     <DataTemplate x:Key="dgTreeColumnEditingTemplate">
         <Grid>
-            <TextBox x:Name="tbxContent" mah:TextBoxHelper.ClearTextButton="True"/>
+            <TextBox x:Name="tbxContent" Style="{DynamicResource MahApps.Styles.TextBox.DataGrid.Editing}"/>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
