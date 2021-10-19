@@ -10,13 +10,26 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <FrameworkElement Width="{Binding Level,Converter={x:Static converters:LevelToWidthConverter.Instance}}"/>
+            <FrameworkElement x:Name="balnkControl" Width="{Binding Level,Converter={x:Static converters:LevelToWidthConverter.Instance}}"/>
             <ToggleButton x:Name="expander" Grid.Column="1" ClickMode="Press"
                           IsChecked="{Binding Path=IsExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                           Visibility="{Binding Children.Count,Converter={x:Static converters:ZeroToVisibilityConverter.InstanceWidthHidden}}"
                           Style="{DynamicResource MahApps.Styles.ToggleButton.TreeViewItem.ExpandCollapse}"/>
-            <TextBlock x:Name="tbContent" Grid.Column="2" Text="{Binding Text,RelativeSource={RelativeSource TemplatedParent}}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+
+            <TextBlock x:Name="tbContent" Grid.Column="2" TextTrimming="CharacterEllipsis" 
+                       Text="{Binding Text,RelativeSource={RelativeSource TemplatedParent}}" 
+                       Style="{DynamicResource MahApps.Styles.TextBlock.DataGrid}"/>
+            <TextBlock x:Name="tbNew" Grid.ColumnSpan="3" Visibility="Collapsed"
+                       Foreground="Tomato" FontStyle="Italic" TextDecorations="Underline" Margin="18,0,0,0"/>
         </Grid>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding IsNewItem,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGridRow}}" Value="True">
+                <Setter TargetName="balnkControl" Property="Visibility" Value="Hidden"/>
+                <Setter TargetName="expander" Property="Visibility" Value="Hidden"/>
+                <Setter TargetName="tbContent" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="tbNew" Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </DataTemplate.Triggers>
     </DataTemplate>
 
     <DataTemplate x:Key="dgTreeColumnEditingTemplate">

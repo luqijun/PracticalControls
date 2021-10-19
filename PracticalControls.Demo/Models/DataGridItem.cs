@@ -42,6 +42,10 @@ namespace PracticalControls.Demo.Models
             set { Set(ref _groupName, value); }
         }
 
+        public DataGridItem()
+        {
+
+        }
 
         public DataGridItem(string name, string type, string value, int level, bool isVisible)
         {

@@ -40,6 +40,8 @@ namespace PracticalControls.Controls
             }
         }
 
+        public string AddNewItemTip { get; set; }
+
         private RelayCommand<bool?> _refreshCollectionViewCommand;
         public RelayCommand<bool?> RefreshCollectionViewCommand =>
             _refreshCollectionViewCommand ?? (_refreshCollectionViewCommand = new RelayCommand<bool?>(ExecuteRefreshCollectionViewCommand));
@@ -83,6 +85,10 @@ namespace PracticalControls.Controls
             Binding binding = new Binding("RefreshCollectionViewCommand") { Source = this };
             toggleButton?.SetBinding(ToggleButton.CommandProperty, binding);
             toggleButton?.SetBinding(ToggleButton.CommandParameterProperty, new Binding("IsChecked") { Source = toggleButton });
+
+            //新增行提示
+            TextBlock tbNew = (TextBlock)element.ContentTemplate.FindName("tbNew", element);
+            tbNew.Text = this.AddNewItemTip;
 
             return element;
         }
@@ -182,7 +188,6 @@ namespace PracticalControls.Controls
         }
 
         #endregion
-
 
     }
 }

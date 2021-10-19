@@ -10,7 +10,7 @@
     <Grid>
         <DataGrid AutoGenerateColumns="False"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                  CanUserAddRows="False"
+                  CanUserAddRows="True"
                   HorizontalScrollBarVisibility="Visible"
                   SelectedItem="{Binding SelDataGridItem,Mode=TwoWay}"
                   ItemsSource="{Binding LstDataGridItemView}">
@@ -26,7 +26,7 @@
                 </GroupStyle>
             </DataGrid.GroupStyle>
             <DataGrid.Columns>
-                <pc:DataGridTreeColumn Header="名称" Binding="{Binding Name}" Width="*"/>
+                <pc:DataGridTreeColumn Header="名称" Binding="{Binding Name}" AddNewItemTip="新增一行" Width="*"/>
                 <DataGridTextColumn Header="类型" Binding="{Binding Type}" Width="*"/>
                 <DataGridTextColumn Header="值" Binding="{Binding Value}" Width="*"/>
             </DataGrid.Columns>
