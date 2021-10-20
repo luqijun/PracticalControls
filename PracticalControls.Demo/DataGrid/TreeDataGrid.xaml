@@ -5,15 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:pc="clr-namespace:PracticalControls.Controls;assembly=PracticalControls"
              xmlns:local="clr-namespace:PracticalControls.Demo.DataGrid"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <DataGrid AutoGenerateColumns="False"
+        <DataGrid x:Name="dg" AutoGenerateColumns="False"
                   VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                   CanUserAddRows="True"
                   HorizontalScrollBarVisibility="Visible"
                   SelectedItem="{Binding SelDataGridItem,Mode=TwoWay}"
                   ItemsSource="{Binding LstDataGridItemView}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="CellEditEnding">
+                    <i:CallMethodAction TargetObject="{Binding}" MethodName="LstDataGridItem_CellEditEnding"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <DataGrid.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
@@ -26,7 +32,7 @@
                 </GroupStyle>
             </DataGrid.GroupStyle>
             <DataGrid.Columns>
-                <pc:DataGridTreeColumn Header="名称" Binding="{Binding Name}" AddNewItemTip="新增一行" Width="*"/>
+                <pc:DataGridTreeColumn Header="名称" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" CanEdit="False" AddNewItemTip="新增一行" Width="*"/>
                 <DataGridTextColumn Header="类型" Binding="{Binding Type}" Width="*"/>
                 <DataGridTextColumn Header="值" Binding="{Binding Value}" Width="*"/>
             </DataGrid.Columns>

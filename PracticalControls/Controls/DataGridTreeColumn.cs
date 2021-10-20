@@ -40,7 +40,25 @@ namespace PracticalControls.Controls
             }
         }
 
-        public string AddNewItemTip { get; set; }
+        private bool _canEdit = true;
+        /// <summary>
+        /// 单元格是否可编辑
+        /// </summary>
+        public bool CanEdit
+        {
+            get { return _canEdit; }
+            set { _canEdit = value; }
+        }
+
+        private string _addNewItemTip;
+        /// <summary>
+        /// 界面新行提示
+        /// </summary>
+        public string AddNewItemTip
+        {
+            get { return _addNewItemTip; }
+            set { _addNewItemTip = value; }
+        }
 
         private RelayCommand<bool?> _refreshCollectionViewCommand;
         public RelayCommand<bool?> RefreshCollectionViewCommand =>
@@ -68,6 +86,8 @@ namespace PracticalControls.Controls
         #endregion
 
         #region Element Generation
+
+        List<object> editableItems = new List<object>();
 
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {
@@ -98,6 +118,14 @@ namespace PracticalControls.Controls
             SetCellEditingTemplate();
 
             var element = base.GenerateEditingElement(cell, dataItem) as ContentPresenter;
+
+            //控制编辑
+            DataGridRow row = UIHelper.FindAncestor<DataGridRow>(cell);
+            if (row.IsNewItem && !editableItems.Contains(row.DataContext))
+                editableItems.Add(row.DataContext);
+            if (!CanEdit && !row.IsNewItem && !editableItems.Contains(row.DataContext))
+                return GenerateElement(cell, dataItem);
+
             element.ApplyTemplate();
 
             //绑定显示内容

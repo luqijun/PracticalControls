@@ -36,7 +36,7 @@ namespace PracticalControls.Demo.DataGrid
     public class TreeDataGridViewModel : ViewModelBase
     {
 
-        public List<DataGridItem> LstDataGridItem { get; set; }
+        public ObservableCollection<DataGridItem> LstDataGridItem { get; set; }
 
         private ICollectionView _lstDataGridItemView;
 
@@ -75,7 +75,7 @@ namespace PracticalControls.Demo.DataGrid
                 }
             }
 
-            this.LstDataGridItem = lstResult;
+            this.LstDataGridItem = new ObservableCollection<DataGridItem>(lstResult);
             TreeDataGridHelper.ResetRelationShip(this.LstDataGridItem);
 
             this.LstDataGridItemView = CollectionViewSource.GetDefaultView(this.LstDataGridItem);
@@ -84,5 +84,31 @@ namespace PracticalControls.Demo.DataGrid
             //分组
             this.LstDataGridItemView.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
         }
+
+        #region Event
+        public void LstDataGridItem_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+
+            if (this.LstDataGridItemView is ListCollectionView cv)
+            {
+                object currentAddItem = cv.CurrentAddItem;
+
+                //延迟刷新
+                DelayActionHelper.DoActionWhenMeetCondition("LstDataGridItem_CellEditEnding", () =>
+                {
+                    if (currentAddItem != null)
+                    {
+                        //不符合条件则移除
+                        var newItem = cv.NewItemPlaceholderPosition == NewItemPlaceholderPosition.AtEnd ? this.LstDataGridItem.LastOrDefault() : this.LstDataGridItem.FirstOrDefault();
+                        if (string.IsNullOrEmpty(this.LstDataGridItem.LastOrDefault().Name))
+                            this.LstDataGridItem.Remove(newItem);
+
+                        this.LstDataGridItemView.Refresh();
+                    }
+
+                }, () => !cv.IsAddingNew && !cv.IsEditingItem);
+            }
+        }
+        #endregion
     }
 }
