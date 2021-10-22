@@ -58,7 +58,7 @@ namespace PracticalControls.Extensions
         /// 结束编辑 需要两次扩展
         /// </summary>
         /// <param name="dg"></param>
-        public static void FinishingEditing(this DataGrid dg)
+        public static void FinishEditing(this DataGrid dg)
         {
             dg.CommitEdit();
             dg.CommitEdit();

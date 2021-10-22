@@ -70,7 +70,7 @@ namespace PracticalControls.Controls
         /// <param name="isExpanded"></param>
         private void ExecuteRefreshCollectionViewCommand(bool? isExpanded)
         {
-            this.DataGridOwner.FinishingEditing();
+            this.DataGridOwner.FinishEditing();
             ICollectionView cv = this.DataGridOwner.ItemsSource as ICollectionView;
             if (cv != null)
                 cv.Refresh();
@@ -125,7 +125,7 @@ namespace PracticalControls.Controls
                 editableItems.Add(row.DataContext);
             if (!CanEdit && !row.IsNewItem && !editableItems.Contains(row.DataContext))
             {
-                this.DataGridOwner.FinishingEditing();
+                this.DataGridOwner.FinishEditing();
                 return null;
             }
 
