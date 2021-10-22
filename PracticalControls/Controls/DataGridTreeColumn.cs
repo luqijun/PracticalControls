@@ -124,7 +124,10 @@ namespace PracticalControls.Controls
             if (row.IsNewItem && !editableItems.Contains(row.DataContext))
                 editableItems.Add(row.DataContext);
             if (!CanEdit && !row.IsNewItem && !editableItems.Contains(row.DataContext))
-                return GenerateElement(cell, dataItem);
+            {
+                this.DataGridOwner.FinishingEditing();
+                return null;
+            }
 
             element.ApplyTemplate();
 
