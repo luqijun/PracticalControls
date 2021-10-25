@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="PracticalControls.Demo.TreeView.DragableTreeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PracticalControls.Demo.TreeView"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:enums="clr-namespace:PracticalControls.Enums;assembly=PracticalControls"
+             xmlns:helpers="clr-namespace:PracticalControls.Common.Helpers;assembly=PracticalControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <HierarchicalDataTemplate x:Key="tvItemTemplate" ItemsSource="{Binding Children}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="img" Grid.Column="0" Margin="2,0" Source="{Binding ImageSource}"/>
+                <TextBlock x:Name="tb" Grid.Column="1" Text="{Binding Name}"/>
+            </Grid>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <TreeView x:Name="treeView"
+                  ItemsSource="{Binding LstTreeItem}"
+                  ItemTemplate="{DynamicResource tvItemTemplate}" 
+                  ItemContainerStyle="{DynamicResource PracticalControls.Styles.DragDropTreeViewItemStyle}"
+                  helpers:TreeViewHelper.CanDragDropItem="True"
+                  helpers:TreeViewHelper.DragDropItemAction="{Binding DragDropItemAction}">
+        </TreeView>
+    </Grid>
+</UserControl>

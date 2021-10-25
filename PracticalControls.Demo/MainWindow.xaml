@@ -5,9 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PracticalControls.Demo"
         xmlns:dg="clr-namespace:PracticalControls.Demo.DataGrid"
+        xmlns:tv="clr-namespace:PracticalControls.Demo.TreeView"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <dg:TreeDataGrid/>
+        <TabControl>
+            <TabItem Header="DataGrid">
+                <dg:TreeDataGrid/>
+            </TabItem>
+            <TabItem Header="TreeView" IsSelected="True">
+                <tv:DragableTreeView/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
