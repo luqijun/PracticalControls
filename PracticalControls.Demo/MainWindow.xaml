@@ -14,7 +14,7 @@
                 <dg:TreeDataGrid/>
             </TabItem>
             <TabItem Header="TreeView" IsSelected="True">
-                <tv:DragableTreeView/>
+                <tv:DraggableTreeView/>
             </TabItem>
         </TabControl>
     </Grid>

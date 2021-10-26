@@ -27,7 +27,7 @@ namespace PracticalControls.Demo.TreeView
     /// <summary>
     /// DragableTreeView.xaml 的交互逻辑
     /// </summary>
-    public partial class DragableTreeView : UserControl
+    public partial class DraggableTreeView : UserControl
     {
         #region
         private bool IsDragging = false;
@@ -35,7 +35,7 @@ namespace PracticalControls.Demo.TreeView
         private ObservableCollection<DragableTreeItem> list = new ObservableCollection<DragableTreeItem>();
         #endregion
 
-        public DragableTreeView()
+        public DraggableTreeView()
         {
             InitializeComponent();
 
