@@ -213,9 +213,21 @@ namespace PracticalControls.Common.Helpers
         {
             var action = TreeViewHelper.GetDragDropItemAction(sender as DependencyObject);
             var element = e.OriginalSource as FrameworkElement;
-            InsertMode mode = element.Name == "leftRect" ? InsertMode.SameGrade :
-                                                           (element.Name == "rightRect" ? InsertMode.NextGrade : InsertMode.None);
-            action?.Invoke(e.Data.GetData("TreeViewDraggedData"), element.DataContext, mode);
+            ICanDragDrop targetItem = element.DataContext as ICanDragDrop;
+            InsertMode mode = InsertMode.None;
+            if (targetItem.CanDrop)
+            {
+                if (targetItem.CanDropToSameGrade && targetItem.CanDropToNextGrade)
+                    mode = element.Name == "leftRect" ? InsertMode.SameGrade :
+                                                         (element.Name == "rightRect" ? InsertMode.NextGrade : InsertMode.None);
+                else if (targetItem.CanDropToSameGrade && element.Name == "leftRect")
+                    mode = InsertMode.SameGrade;
+                else if (targetItem.CanDropToNextGrade && element.Name == "rightRect")
+                    mode = InsertMode.NextGrade;
+            }
+
+            if (mode != InsertMode.None)
+                action?.Invoke(e.Data.GetData("TreeViewDraggedData"), element.DataContext, mode);
         }
 
         #endregion

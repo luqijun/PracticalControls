@@ -85,14 +85,24 @@ namespace PracticalControls.Demo.TreeView
             {
                 DragableTreeItem ti0 = new DragableTreeItem() { Name = "item1" + i, CanDrop = false };
                 this.LstTreeItem.Add(ti0);
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < 5; j++)
                 {
-                    DragableTreeItem ti1 = new DragableTreeItem() { Name = "item2" + j };
+                    DragableTreeItem ti1 = new DragableTreeItem() { Name = "item2" + j, CanDropToSameGrade = j != 2, CanDropToNextGrade = j != 3 };
+                    if (!ti1.CanDropToSameGrade)
+                        ti1.Name += "---不可拖到他的同级";
+                    if (!ti1.CanDropToNextGrade)
+                        ti1.Name += "---不可拖到他的子级";
                     ti0.Children.Add(ti1);
                     ti1.Parent = ti0;
-                    for (int k = 0; k < 5; k++)
+                    for (int k = 0; k < 8; k++)
                     {
-                        DragableTreeItem ti2 = new DragableTreeItem() { Name = "item3" + k, CanDrag = k != 3 };
+                        DragableTreeItem ti2 = new DragableTreeItem() { Name = "item3" + k, CanDrag = k != 3, CanDropToSameGrade = k != 4, CanDropToNextGrade = k != 5 };
+                        if (!ti2.CanDrag)
+                            ti2.Name += "---不可拖拽";
+                        if (!ti2.CanDropToSameGrade)
+                            ti2.Name += "---不可拖到他的同级";
+                        if (!ti2.CanDropToNextGrade)
+                            ti2.Name += "---不可拖到他的子级";
                         ti1.Children.Add(ti2);
                         ti2.Parent = ti1;
                     }
@@ -113,7 +123,7 @@ namespace PracticalControls.Demo.TreeView
         /// <param name="mode"></param>
         public void HandleDragDrop(DragableTreeItem source, DragableTreeItem target, InsertMode mode)
         {
-            if (source == null || target == null || source.Id == target.Id)
+            if (source == null || target == null || source.Id == target.Id || mode == InsertMode.None)
                 return;
 
             source = TreeViewHelper.GetNode(this.LstTreeItem, o => o.Id == source.Id) as DragableTreeItem;
@@ -174,6 +184,22 @@ namespace PracticalControls.Demo.TreeView
         {
             get { return _canDrop; }
             set { Set(ref _canDrop, value); }
+        }
+
+        private bool _canDropToSameGrade = true;
+
+        public bool CanDropToSameGrade
+        {
+            get { return _canDropToSameGrade; }
+            set { Set(ref _canDropToSameGrade, value); }
+        }
+
+        private bool _canDropToNextGrade = true;
+
+        public bool CanDropToNextGrade
+        {
+            get { return _canDropToNextGrade; }
+            set { Set(ref _canDropToNextGrade, value); }
         }
 
         #endregion

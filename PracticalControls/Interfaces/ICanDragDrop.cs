@@ -18,5 +18,15 @@ namespace PracticalControls.Interfaces
         /// 是否可以Drop
         /// </summary>
         public bool CanDrop { get; set; }
+
+        /// <summary>
+        /// 是否可以Drop到同级节点
+        /// </summary>
+        public bool CanDropToSameGrade { get; set; }
+
+        /// <summary>
+        /// 是否可以Drop到下一级点
+        /// </summary>
+        public bool CanDropToNextGrade { get; set; }
     }
 }
