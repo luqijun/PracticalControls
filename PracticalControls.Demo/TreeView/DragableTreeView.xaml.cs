@@ -41,79 +41,6 @@ namespace PracticalControls.Demo.TreeView
 
             this.DataContext = new DragableTreeViewModel();
         }
-
-        #region
-
-        private DragableTreeItem _movingTreeItem;
-        private Point _lastMouseDown;
-        private void treeView_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                var ele = e.OriginalSource as FrameworkElement;
-                if (ele != null && ele.DataContext is DragableTreeItem)
-                {
-                    _lastMouseDown = e.GetPosition(treeView);
-                    _movingTreeItem = (DragableTreeItem)ele.DataContext;
-                }
-            }
-        }
-
-        private void treeView_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                Point currentPosition = e.GetPosition(treeView);
-                if ((Math.Abs(currentPosition.X - _lastMouseDown.X) > 2.0) || (Math.Abs(currentPosition.Y - _lastMouseDown.Y) > 2.0))
-                {
-                    if (!IsDragging)
-                    {
-                        if (_movingTreeItem != null)
-                        {
-                            IsDragging = true;
-                            this.treeView.Cursor = Cursors.Hand;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void treeView_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (_movingTreeItem == null)
-            {
-                return;
-            }
-            var ele = e.OriginalSource as FrameworkElement;
-            if (ele != null)
-            {
-                var targetTreeItem = (DragableTreeItem)ele.DataContext;
-                if (targetTreeItem == null)
-                {
-                    ClearTreeDrag();
-                    return;
-                }
-                if (targetTreeItem.Name != _movingTreeItem.Name)
-                {
-                    (this.DataContext as DragableTreeViewModel).HandleDragDrop(_movingTreeItem, targetTreeItem, InsertMode.None);
-                }
-            }
-            ClearTreeDrag();
-        }
-
-        private void treeView_MouseLeave(object sender, MouseEventArgs e)
-        {
-            ClearTreeDrag();
-        }
-
-        private void ClearTreeDrag()
-        {
-            _movingTreeItem = null;
-            IsDragging = false;
-            this.treeView.Cursor = Cursors.Arrow;
-        }
-
-        #endregion
     }
 
     public class DragableTreeViewModel : ViewModelBase
@@ -160,7 +87,7 @@ namespace PracticalControls.Demo.TreeView
                 this.LstTreeItem.Add(ti0);
                 for (int j = 0; j < 4; j++)
                 {
-                    DragableTreeItem ti1 = new DragableTreeItem() { Name = "item2" + j, CanDrop = false };
+                    DragableTreeItem ti1 = new DragableTreeItem() { Name = "item2" + j };
                     ti0.Children.Add(ti1);
                     ti1.Parent = ti0;
                     for (int k = 0; k < 5; k++)
@@ -186,7 +113,7 @@ namespace PracticalControls.Demo.TreeView
         /// <param name="mode"></param>
         public void HandleDragDrop(DragableTreeItem source, DragableTreeItem target, InsertMode mode)
         {
-            if (source == null || target == null)
+            if (source == null || target == null || source.Id == target.Id)
                 return;
 
             source = TreeViewHelper.GetNode(this.LstTreeItem, o => o.Id == source.Id) as DragableTreeItem;

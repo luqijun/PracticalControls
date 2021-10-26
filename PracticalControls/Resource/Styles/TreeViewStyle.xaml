@@ -24,11 +24,7 @@
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">
                     <StackPanel>
                         <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Border x:Name="Border"
+                            <Border x:Name="Border" AllowDrop="True"
                                     MinHeight="{TemplateBinding MinHeight}"
                                     Padding="{TemplateBinding Padding}"
                                     Background="{TemplateBinding Background}"
@@ -39,6 +35,10 @@
                                       Margin="{Binding Converter={StaticResource LengthConverter}, RelativeSource={x:Static RelativeSource.TemplatedParent}}"
                                       VerticalAlignment="Stretch"
                                       Background="Transparent">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
@@ -54,30 +54,31 @@
                                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                       ContentSource="Header"
                                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+
+
+                                    <!--拖拽显示样式-->
+                                    <Grid Grid.Row="1" Grid.Column="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="5*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid x:Name="dragSameGrade" Grid.Column="0" Grid.ColumnSpan="2" Height="4" Visibility="Collapsed">
+                                            <Ellipse Fill="Blue" StrokeThickness="0" Width="4" Height="4" HorizontalAlignment="Left"/>
+                                            <Rectangle Fill="Blue" StrokeThickness="0" Height="1" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid x:Name="dragNextGrade" Grid.Column="1" Height="4" Visibility="Collapsed">
+                                            <Ellipse Fill="Blue" StrokeThickness="0" Width="4" Height="4" HorizontalAlignment="Left"/>
+                                            <Rectangle Fill="Blue" StrokeThickness="0" Height="1" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Border>
 
-                            <!--拖拽显示样式-->
-                            <Grid Grid.Row="1" Margin="{Binding Margin, ElementName=gridContent}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="5*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid x:Name="dragSameGrade" Grid.Column="0" Grid.ColumnSpan="2" Height="4" Visibility="Collapsed">
-                                    <Ellipse Fill="Blue" StrokeThickness="0" Width="4" Height="4" HorizontalAlignment="Left"/>
-                                    <Rectangle Fill="Blue" StrokeThickness="0" Height="1" VerticalAlignment="Center"/>
-                                </Grid>
-                                <Grid x:Name="dragNextGrade" Grid.Column="1" Height="4" Visibility="Collapsed">
-                                    <Ellipse Fill="Blue" StrokeThickness="0" Width="4" Height="4" HorizontalAlignment="Left"/>
-                                    <Rectangle Fill="Blue" StrokeThickness="0" Height="1" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Grid>
-
                             <!--用于检查鼠标移动区域-->
-                            <Grid x:Name="rectGrid" Panel.ZIndex="0" Visibility="Collapsed">
+                            <Grid x:Name="rectGrid" Visibility="Collapsed">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="5*"/>
+                                    <ColumnDefinition Width="2*"/>
                                 </Grid.ColumnDefinitions>
                                 <Rectangle x:Name="leftRect" Grid.Column="0" Fill="Transparent"/>
                                 <Rectangle x:Name="rightRect" Grid.Column="1" Fill="Transparent"/>
@@ -121,6 +122,13 @@
                         <EventTrigger SourceName="rightRect" RoutedEvent="Drop">
                             <StopStoryboard BeginStoryboardName="RightBeginStoryboard"/>
                         </EventTrigger>
+
+                        <Trigger SourceName="dragSameGrade" Property="Visibility" Value="Visible">
+                            <Setter Property="IsExpanded" Value="False"/>
+                        </Trigger>
+                        <Trigger SourceName="dragNextGrade" Property="Visibility" Value="Visible">
+                            <Setter Property="IsExpanded" Value="True"/>
+                        </Trigger>
 
                         <!--<MultiDataTrigger>
                             <MultiDataTrigger.Conditions>

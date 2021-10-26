@@ -123,7 +123,7 @@ namespace PracticalControls.Common.Helpers
         #region 拖拽中显示
 
         static Point? _dragStartPosition = null;
-        static TreeViewItemDragAdorner _dragAdorner = null;
+        static DefaultTreeViewItemDragAdorner _dragAdorner = null;
         static AdornerLayer _adornerLayer = null;
         static List<TreeViewItem> _treeViewItems = new List<TreeViewItem>();
 
@@ -146,14 +146,13 @@ namespace PracticalControls.Common.Helpers
                 _draggingObject = tvItem.DataContext;
             }
 
-            _dragStartPosition = System.Windows.Input.Mouse.GetPosition(tvItem);
+            _dragStartPosition = NativeMethods.GetCursorPos();
         }
         private static void Tv_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             TreeView tv = sender as TreeView;
             _treeViewItems.Clear();
             _dragStartPosition = null;
-            TreeViewHelper.SetIsDragging(tv, false);
         }
 
         private static void Tv_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
@@ -164,10 +163,12 @@ namespace PracticalControls.Common.Helpers
 
             //拖拽中
             TreeViewHelper.SetIsDragging(viewElement, true);
+            _treeViewItems[0].SetCurrentValue(TreeViewItem.IsExpandedProperty, false);
+
 
             if (_adornerLayer == null || _dragAdorner == null)
             {
-                _dragAdorner = new TreeViewItemDragAdorner(viewElement, _treeViewItems[0]) { Width = 100, Height = 40 };
+                _dragAdorner = new DefaultTreeViewItemDragAdorner(viewElement, _treeViewItems[0]) { Width = 100, Height = 40 };
                 _adornerLayer = AdornerLayer.GetAdornerLayer(viewElement);
                 _adornerLayer.Add(_dragAdorner);
 
@@ -190,6 +191,7 @@ namespace PracticalControls.Common.Helpers
             _adornerLayer.Remove(_dragAdorner);
             _dragAdorner = null;
             _dragStartPosition = null;
+            TreeViewHelper.SetIsDragging(viewElement, false);
         }
 
         private static void ViewElement_GiveFeedback(object sender, GiveFeedbackEventArgs e)
@@ -198,7 +200,7 @@ namespace PracticalControls.Common.Helpers
                 return;
 
             //var viewElement = sender as FrameworkElement;
-            var delta = Mouse.GetPosition(_treeViewItems[0]) - _dragStartPosition.Value;
+            var delta = NativeMethods.GetCursorPos() - _dragStartPosition.Value;
             if (Math.Abs(delta.X) < 1.0d || Math.Abs(delta.Y) < 1.0d)
                 return;
 

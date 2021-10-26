@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 
 namespace PracticalControls.Adorners
 {
-    public class TreeViewItemDragAdorner : Adorner
+    public class DefaultTreeViewItemDragAdorner : Adorner
     {
         Transform _startTransform;
         TransformGroup _moveTransform = new TransformGroup();
@@ -32,33 +32,30 @@ namespace PracticalControls.Adorners
             }
         }
 
-        //TreeViewItem _previewControl { get; set; }
         FrameworkElement _previewControl { get; set; }
 
         List<Visual> _visuals;
 
-        public TreeViewItemDragAdorner(UIElement adornedElement, TreeViewItem tv) : base(adornedElement)
+        public DefaultTreeViewItemDragAdorner(UIElement adornedElement, TreeViewItem tv) : base(adornedElement)
         {
-            //_previewControl = new TreeViewItem()
-            //{
-            //    Style = tv.Style,
-            //    Header = tv.Header,
-            //    Template = tv.Template,
-            //    ItemTemplate = tv.ItemTemplate,
-            //    HeaderTemplate = tv.HeaderTemplate,
-            //    DataContext = tv.DataContext,
-            //    VerticalAlignment = VerticalAlignment.Center,
-            //    Background = new SolidColorBrush(Colors.Red),
-            //    Width = 100,
-            //    Height = 40
-            //};
-
-            _previewControl = new TextBlock() { Text = "123" };
+            _previewControl = new TreeViewItem()
+            {
+                Opacity = 0.5,
+                Style = tv.Style,
+                Header = tv.Header,
+                Template = tv.Template,
+                ItemTemplate = tv.ItemTemplate,
+                HeaderTemplate = tv.HeaderTemplate,
+                DataContext = tv.DataContext,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                Background = new SolidColorBrush(Colors.LightBlue),
+            };
 
             _visuals = new List<Visual>() { _previewControl };
 
             var startPoint = Mouse.GetPosition(adornedElement);
-            _startTransform = new TranslateTransform(0, startPoint.Y - (adornedElement as FrameworkElement).ActualHeight / 2);
+            _startTransform = new TranslateTransform(0, startPoint.Y - tv.ActualHeight / 2);
         }
 
         #region 重写方法
@@ -69,11 +66,11 @@ namespace PracticalControls.Adorners
             return _visuals[index];
         }
 
-        //protected override Size MeasureOverride(Size finalSize)
-        //{
-        //    _previewControl.Measure(finalSize);
-        //    return _previewControl.DesiredSize;
-        //}
+        protected override Size MeasureOverride(Size finalSize)
+        {
+            _previewControl.Measure(finalSize);
+            return _previewControl.DesiredSize;
+        }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
