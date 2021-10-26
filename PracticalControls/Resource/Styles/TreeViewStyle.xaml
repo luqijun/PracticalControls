@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:enums="clr-namespace:PracticalControls.Enums"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:helpers="clr-namespace:PracticalControls.Common.Helpers">
 
     <!--TreeViewItem样式-->
@@ -84,8 +85,37 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="2*"/>
                                 </Grid.ColumnDefinitions>
-                                <Rectangle x:Name="leftRect" Grid.Column="0" Fill="Transparent"/>
-                                <Rectangle x:Name="rightRect" Grid.Column="1" Fill="Transparent"/>
+                                <Rectangle x:Name="leftRect" Grid.Column="0" Fill="Transparent">
+                                    <!--自动收缩、插入到同级-->
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="DragEnter">
+                                            <i:ChangePropertyAction TargetObject="{Binding}" PropertyName="IsExpanded" Value="{x:Static mah:BooleanBoxes.FalseBox}"/>
+                                            <i:ChangePropertyAction TargetObject="{Binding ElementName=dragSameGrade}" PropertyName="Visibility" Value="{x:Static Visibility.Visible}"/>
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="DragLeave">
+                                            <i:ChangePropertyAction TargetObject="{Binding ElementName=dragSameGrade}" PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}"/>
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="Drop">
+                                            <i:ChangePropertyAction TargetObject="{Binding ElementName=dragSameGrade}" PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Rectangle>
+                                <Rectangle x:Name="rightRect" Grid.Column="1" Fill="Transparent">
+                                    <!--自动展开、插入到子级-->
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="DragEnter">
+                                            <i:ChangePropertyAction TargetObject="{Binding}" PropertyName="IsExpanded" Value="{x:Static mah:BooleanBoxes.TrueBox}"/>
+                                            <i:ChangePropertyAction TargetObject="{Binding ElementName=dragNextGrade}" PropertyName="Visibility" Value="{x:Static Visibility.Visible}"/>
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="DragLeave">
+                                            <i:ChangePropertyAction TargetObject="{Binding ElementName=dragNextGrade}" PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}"/>
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="Drop">
+                                            <i:ChangePropertyAction TargetObject="{Binding ElementName=dragNextGrade}" PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Rectangle>
+
                             </Grid>
                         </Grid>
                         <ItemsPresenter x:Name="ItemsHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -95,16 +125,18 @@
                             <Setter TargetName="rectGrid" Property="Visibility" Value="Visible"/>
                         </DataTrigger>
 
+                        <!--可部分Drop-->
+                        <DataTrigger Binding="{Binding CanDropToSameGrade}" Value="False">
+                            <Setter TargetName="dragSameGradeContainer" Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CanDropToNextGrade}" Value="False">
+                            <Setter TargetName="dragNextGradeContainer" Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+
+                        <!--#region 其他设置拖拽时的样式-->
+                        
                         <!--拖拽时显示插入位置-->
-                        <EventTrigger SourceName="leftRect" RoutedEvent="Rectangle.DragEnter">
-                            <!--自动收缩-->
-                            <BeginStoryboard x:Name="ShrinkStoryboard">
-                                <Storyboard>
-                                    <ObjectAnimationUsingKeyFrames Duration="0:0:0" Storyboard.TargetProperty="IsExpanded">
-                                        <DiscreteObjectKeyFrame Value="{x:Static mah:BooleanBoxes.FalseBox}" KeyTime="0:0:0"/>
-                                    </ObjectAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </BeginStoryboard>
+                        <!--<EventTrigger SourceName="leftRect" RoutedEvent="Rectangle.DragEnter">
                             <BeginStoryboard x:Name="LeftDragBeginStoryboard">
                                 <Storyboard>
                                     <ObjectAnimationUsingKeyFrames Duration="0:0:0" Storyboard.TargetName="dragSameGrade" Storyboard.TargetProperty="Visibility">
@@ -121,14 +153,6 @@
                         </EventTrigger>
 
                         <EventTrigger SourceName="rightRect" RoutedEvent="Rectangle.DragEnter">
-                            <!--自动展开-->
-                            <BeginStoryboard x:Name="ExpandStoryboard">
-                                <Storyboard>
-                                    <ObjectAnimationUsingKeyFrames Duration="0:0:0" Storyboard.TargetProperty="IsExpanded">
-                                        <DiscreteObjectKeyFrame Value="{x:Static mah:BooleanBoxes.TrueBox}" KeyTime="0:0:0"/>
-                                    </ObjectAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </BeginStoryboard>
                             <BeginStoryboard x:Name="RightBeginStoryboard">
                                 <Storyboard>
                                     <ObjectAnimationUsingKeyFrames Duration="0:0:0" Storyboard.TargetName="dragNextGrade" Storyboard.TargetProperty="Visibility">
@@ -142,18 +166,10 @@
                         </EventTrigger>
                         <EventTrigger SourceName="rightRect" RoutedEvent="Drop">
                             <StopStoryboard BeginStoryboardName="RightBeginStoryboard"/>
-                        </EventTrigger>
-
-                        <!--可部分Drop-->
-                        <DataTrigger Binding="{Binding CanDropToSameGrade}" Value="False">
-                            <Setter TargetName="dragSameGradeContainer" Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding CanDropToNextGrade}" Value="False">
-                            <Setter TargetName="dragNextGradeContainer" Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
+                        </EventTrigger>-->
 
                         <!--拖拽时自动展开-->
-                        <MultiDataTrigger>
+                        <!--<MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Visibility,ElementName=dragSameGrade}" Value="Visible"/>
                                 <Condition Binding="{Binding CanDropToSameGrade}" Value="True"/>
@@ -166,7 +182,7 @@
                                 <Condition Binding="{Binding CanDropToNextGrade}" Value="True"/>
                             </MultiDataTrigger.Conditions>
                             <Setter Property="IsExpanded" Value="True"/>
-                        </MultiDataTrigger>
+                        </MultiDataTrigger>-->
 
                         <!--<Trigger SourceName="dragSameGrade" Property="Visibility" Value="Visible">
                             <Setter Property="IsExpanded" Value="False"/>
@@ -195,6 +211,8 @@
                             <Setter TargetName="dragNextGrade" Property="Visibility" Value="Visible"/>
                         </MultiDataTrigger>-->
 
+                        <!--#endregion-->
+                        
                         <Trigger Property="IsExpanded" Value="False">
                             <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed" />
                         </Trigger>
