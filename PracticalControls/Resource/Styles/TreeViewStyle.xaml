@@ -97,6 +97,14 @@
 
                         <!--拖拽时显示插入位置-->
                         <EventTrigger SourceName="leftRect" RoutedEvent="Rectangle.DragEnter">
+                            <!--自动收缩-->
+                            <BeginStoryboard x:Name="ShrinkStoryboard">
+                                <Storyboard>
+                                    <ObjectAnimationUsingKeyFrames Duration="0:0:0" Storyboard.TargetProperty="IsExpanded">
+                                        <DiscreteObjectKeyFrame Value="{x:Static mah:BooleanBoxes.FalseBox}" KeyTime="0:0:0"/>
+                                    </ObjectAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
                             <BeginStoryboard x:Name="LeftDragBeginStoryboard">
                                 <Storyboard>
                                     <ObjectAnimationUsingKeyFrames Duration="0:0:0" Storyboard.TargetName="dragSameGrade" Storyboard.TargetProperty="Visibility">
@@ -113,6 +121,14 @@
                         </EventTrigger>
 
                         <EventTrigger SourceName="rightRect" RoutedEvent="Rectangle.DragEnter">
+                            <!--自动展开-->
+                            <BeginStoryboard x:Name="ExpandStoryboard">
+                                <Storyboard>
+                                    <ObjectAnimationUsingKeyFrames Duration="0:0:0" Storyboard.TargetProperty="IsExpanded">
+                                        <DiscreteObjectKeyFrame Value="{x:Static mah:BooleanBoxes.TrueBox}" KeyTime="0:0:0"/>
+                                    </ObjectAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
                             <BeginStoryboard x:Name="RightBeginStoryboard">
                                 <Storyboard>
                                     <ObjectAnimationUsingKeyFrames Duration="0:0:0" Storyboard.TargetName="dragNextGrade" Storyboard.TargetProperty="Visibility">
