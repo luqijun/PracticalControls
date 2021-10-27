@@ -82,8 +82,8 @@
                             <!--用于检查鼠标移动区域-->
                             <Grid x:Name="rectGrid" Margin="{Binding Margin,ElementName=gridContent}" Visibility="Collapsed">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition x:Name="leftCol" Width="*"/>
+                                    <ColumnDefinition x:Name="rightCol" Width="2*"/>
                                 </Grid.ColumnDefinitions>
                                 <Rectangle x:Name="leftRect" Grid.Column="0" Fill="Transparent">
                                     <!--自动收缩、插入到同级-->
@@ -132,6 +132,13 @@
                         <DataTrigger Binding="{Binding CanDropToNextGrade}" Value="False">
                             <Setter TargetName="dragNextGradeContainer" Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding CanDropToSameGrade}" Value="True"/>
+                                <Condition Binding="{Binding CanDropToNextGrade}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="rightCol" Property="Width" Value="0.0"/>
+                        </MultiDataTrigger>
 
                         <!--#region 其他设置拖拽时的样式-->
                         
