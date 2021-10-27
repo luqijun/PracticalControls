@@ -98,6 +98,7 @@ namespace PracticalControls.Common.Helpers
             tv.PreviewMouseLeftButtonUp += Tv_PreviewMouseLeftButtonUp;
             tv.MouseMove += Tv_MouseMove;
 
+            tv.PreviewDragOver += Tv_PreviewDragOver;
             tv.PreviewDrop += Tv_PreviewDrop;
         }
 
@@ -208,6 +209,35 @@ namespace PracticalControls.Common.Helpers
             //Mouse.SetCursor(Cursors.Hand);
         }
 
+        private static void Tv_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            FrameworkElement element = sender as FrameworkElement;
+            if (element == null)
+                return;
+
+            ScrollViewer scrollViewer = UIHelper.FindDescendant<ScrollViewer>(element);
+            if (scrollViewer == null)
+                return;
+
+            double tolerance = 60;
+            double verticalPos = e.GetPosition(element).Y;
+            double offset = 20;
+
+            if (verticalPos < tolerance) // Top of visible list? 
+            {
+                //Scroll up
+                scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - offset);
+            }
+            else if (verticalPos > element.ActualHeight - tolerance) //Bottom of visible list? 
+            {
+                //Scroll down
+                scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + offset);
+            }
+        }
+
+        #endregion
+
+        #region 拖拽后处理
 
         private static void Tv_PreviewDrop(object sender, DragEventArgs e)
         {
@@ -230,10 +260,6 @@ namespace PracticalControls.Common.Helpers
                 action?.Invoke(e.Data.GetData("TreeViewDraggedData"), element.DataContext, mode);
         }
 
-        #endregion
-
-        #region 拖拽后处理
-
         public static TreeViewItemDragDropAction GetDragDropItemAction(DependencyObject obj)
         {
             return (TreeViewItemDragDropAction)obj.GetValue(DragDropItemActionProperty);
@@ -246,9 +272,7 @@ namespace PracticalControls.Common.Helpers
 
         public static readonly DependencyProperty DragDropItemActionProperty =
             DependencyProperty.RegisterAttached("DragDropItemAction", typeof(TreeViewItemDragDropAction), typeof(TreeViewHelper), new PropertyMetadata(null));
-
-
-
+        
         #endregion
 
         #region 静态方法
