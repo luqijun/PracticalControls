@@ -7,7 +7,7 @@
         xmlns:dg="clr-namespace:PracticalControls.Demo.DataGrid"
         xmlns:tv="clr-namespace:PracticalControls.Demo.TreeView"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="PracticalControls" Height="450" Width="800">
     <Grid>
         <TabControl>
             <TabItem Header="DataGrid">
