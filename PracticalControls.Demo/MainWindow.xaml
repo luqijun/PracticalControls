@@ -11,7 +11,14 @@
     <Grid>
         <TabControl>
             <TabItem Header="DataGrid">
-                <dg:TreeDataGrid/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <dg:TreeDataGrid/>
+                    <dg:DynamicDataGrid Grid.Row="1"/>
+                </Grid>
             </TabItem>
             <TabItem Header="TreeView">
                 <tv:DraggableTreeView/>
