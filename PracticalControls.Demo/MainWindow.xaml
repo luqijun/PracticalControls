@@ -7,7 +7,7 @@
         xmlns:dg="clr-namespace:PracticalControls.Demo.DataGrid"
         xmlns:tv="clr-namespace:PracticalControls.Demo.TreeView"
         mc:Ignorable="d"
-        Title="PracticalControls" Height="450" Width="800">
+        Title="PracticalControls" Height="800" Width="1200">
     <Grid>
         <TabControl>
             <TabItem Header="DataGrid">
@@ -17,7 +17,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <dg:TreeDataGrid/>
-                    <dg:DynamicDataGrid Grid.Row="1"/>
+                    <dg:ExcelDataGrid Grid.Row="1"/>
                 </Grid>
             </TabItem>
             <TabItem Header="TreeView">

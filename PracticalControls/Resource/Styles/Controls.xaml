@@ -4,6 +4,8 @@
     <ResourceDictionary.MergedDictionaries>
         
         <ResourceDictionary Source="pack://application:,,,/PracticalControls;component/Resource/Styles/TreeViewStyle.xaml" />
-        
+        <ResourceDictionary Source="pack://application:,,,/PracticalControls;component/Resource/Styles/DataGridTreeColumnStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/PracticalControls;component/Resource/Styles/ExcelDataGridStyle.xaml"/>
+
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

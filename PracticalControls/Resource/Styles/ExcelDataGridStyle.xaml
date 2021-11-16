@@ -1,0 +1,50 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                    xmlns:controls="clr-namespace:PracticalControls.Controls">
+
+    <Style x:Key="dgRowHeaderStyle" TargetType="DataGridRowHeader" BasedOn="{StaticResource MahApps.Styles.DataGridRowHeader}">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+    
+    <Style TargetType="controls:ExcelDataGrid">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Grid>
+                        <DataGrid x:Name="PART_DG" 
+                                  ItemsSource="{Binding LstExpandedObject}"
+                                  CanUserSortColumns="False"   
+                                  AutoGenerateColumns="False" 
+                                  CanUserAddRows="False" 
+                                  SelectionUnit="CellOrRowHeader" 
+                                  SelectionMode="Extended" 
+                                  ClipboardCopyMode="ExcludeHeader"
+                                  GridLinesVisibility="All"
+                                  HeadersVisibility="All"
+                                  RowHeaderWidth="24"
+                                  RowHeaderStyle="{StaticResource dgRowHeaderStyle}">
+                            <DataGrid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Add Row" Command="{Binding AddRowCommand}"/>
+                                    <MenuItem Header="Add Column" Command="{Binding AddColCommand}" 
+                                              CommandParameter="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
+                                    <!--<MenuItem Header="Modify" Command="{Binding ModifyCommand}"/>-->
+                                    <Separator/>
+                                    <MenuItem Header="Insert Row" Command="{Binding InsertRowCommand}"/>
+                                    <MenuItem Header="Insert Column" Command="{Binding InsertColCommand}"/>
+                                    <Separator/>
+                                    <MenuItem Header="Delete Row" Command="{Binding DeleteRowCommand}"/>
+                                    <MenuItem Header="Delete Column" Command="{Binding DeleteColCommand}"/>
+                                    <Separator/>
+                                    <MenuItem Header="{Binding Path=Command.Text, RelativeSource={RelativeSource Self}}" Command ="ApplicationCommands.Copy"/>
+                                    <MenuItem Header="{Binding Path=Command.Text, RelativeSource={RelativeSource Self}}" Command ="ApplicationCommands.Paste"/>
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                        </DataGrid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

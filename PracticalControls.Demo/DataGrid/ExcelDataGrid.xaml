@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="PracticalControls.Demo.DataGrid.ExcelDataGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PracticalControls.Demo.DataGrid"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:controls="clr-namespace:PracticalControls.Controls;assembly=PracticalControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height=" 40"/>
+            <RowDefinition Height=" *"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="VM添加行" Width="80" Height="30" Margin="5,0" Command="{Binding AddRowCommand}"/>
+            <Button Content="VM添加列" Width="80" Height="30" Margin="5,0" Command="{Binding AddColCommand}"/>
+        </StackPanel>
+        <controls:ExcelDataGrid Grid.Row="1" ItemsSource="{Binding LstData}"/>
+    </Grid>
+</UserControl>
