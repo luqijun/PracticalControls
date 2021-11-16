@@ -45,6 +45,18 @@ namespace PracticalControls.Demo.DataGrid
             set { Set(ref _lstData, value); }
         }
 
+        private int _notifyColumnsCount;
+
+        public int NotifyColumnsCount
+        {
+            get { return _notifyColumnsCount; }
+            set
+            {
+                if (Set(ref _notifyColumnsCount, value))
+                    _notifyColumnsCount = 0;
+            }
+        }
+
 
         public ExcelDataGridViewModel()
         {
@@ -68,7 +80,7 @@ namespace PracticalControls.Demo.DataGrid
 
         private void ExcuteAddRowCommand()
         {
-            LstData.Insert(1, new List<string>() { "2", "3" });
+            this.LstData.Insert(1, new List<string>() { "2", "3" });
         }
 
         private RelayCommand<object> _addColCommand;
@@ -79,7 +91,8 @@ namespace PracticalControls.Demo.DataGrid
 
         private void ExcuteAddColCommand(object obj)
         {
-
+            this.LstData[0].Add("123");
+            this.NotifyColumnsCount = 1;
         }
     }
 }

@@ -17,6 +17,6 @@
             <Button Content="VM添加行" Width="80" Height="30" Margin="5,0" Command="{Binding AddRowCommand}"/>
             <Button Content="VM添加列" Width="80" Height="30" Margin="5,0" Command="{Binding AddColCommand}"/>
         </StackPanel>
-        <controls:ExcelDataGrid Grid.Row="1" ItemsSource="{Binding LstData}"/>
+        <controls:ExcelDataGrid Grid.Row="1" ItemsSource="{Binding LstData}" NotifyColumnsCount="{Binding NotifyColumnsCount,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </UserControl>

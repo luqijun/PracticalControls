@@ -33,8 +33,6 @@ namespace PracticalControls.Controls
         ObservableCollection<ExpandoObject> _expandoObjects;
         public bool IsSaving { get; set; }
 
-        #region 依赖属性
-
         public int RowsCount => _expandoObjects == null ? DefaultColumnsCount : _expandoObjects.Count;
 
         public int ColumnsCount
@@ -44,6 +42,31 @@ namespace PracticalControls.Controls
                 if (ItemsSource is IList<List<string>> lstData)
                     return lstData.Max(o => o.Count);
                 return DefaultColumnsCount;
+            }
+        }
+
+        #region 依赖属性
+
+        /// <summary>
+        /// 列的数量修改时通知刷新界面 正数：增加列  负数：删除列
+        /// </summary>
+        public int NotifyColumnsCount
+        {
+            get { return (int)GetValue(NotifyColumnsCountProperty); }
+            set { SetValue(NotifyColumnsCountProperty, value); }
+        }
+
+        public static readonly DependencyProperty NotifyColumnsCountProperty =
+            DependencyProperty.Register("NotifyColumnsCount", typeof(int), typeof(ExcelDataGrid), new PropertyMetadata(0, NotifyColumnsCountPropertyChanged));
+
+        private static void NotifyColumnsCountPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ExcelDataGrid excelGrid = d as ExcelDataGrid;
+            int changedColumnsCount = (int)e.NewValue;
+            if (changedColumnsCount != 0)
+            {
+                excelGrid.ChangeColumnsCount(changedColumnsCount);
+                excelGrid.SetCurrentValue(NotifyColumnsCountProperty, 0);
             }
         }
 
@@ -119,7 +142,8 @@ namespace PracticalControls.Controls
 
         private static void OnCanExecutedPaste(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            string dataText = Clipboard.GetText();
+            e.CanExecute = !string.IsNullOrEmpty(dataText);
         }
 
         private static void OnExecutedPaste(object sender, ExecutedRoutedEventArgs e)
@@ -137,27 +161,9 @@ namespace PracticalControls.Controls
 
             int maxCopyColumn = dataSplits.Max(o => o.Split("\t").Length);
 
-            //补行
-            if (rowIdx + dataSplits.Length > dataGrid.Items.Count)
-            {
-                int num = (rowIdx + dataSplits.Length) - dataGrid.Items.Count;
-                for (int i = 0; i < num; i++)
-                {
-                    excelGrid.InsertRow(excelGrid.RowsCount);
-                }
-            }
-
-            //补列
-            if (columnIdx + maxCopyColumn > dataGrid.Columns.Count)
-            {
-                int num = (columnIdx + maxCopyColumn) - dataGrid.Columns.Count;
-                for (int i = 0; i < num; i++)
-                {
-                    excelGrid.InsertCol(excelGrid.ColumnsCount);
-                }
-            }
-
-            IList<List<string>> lstData = excelGrid.ItemsSource as IList<List<string>>;
+            //赋值
+            int oldColumnsCount = excelGrid.ColumnsCount;
+            IList<List<string>> lstData = (excelGrid.ItemsSource as IList<List<string>>);
             for (int i = 0; i < dataSplits.Length; i++)
             {
                 int row = rowIdx + i;
@@ -175,7 +181,12 @@ namespace PracticalControls.Controls
                 }
             }
 
-            excelGrid.SetDataGridValue(lstData, false);
+            //通知刷新列
+            int changedCount = lstData.Max(o => o.Count) - oldColumnsCount;
+            if (changedCount != 0)
+                excelGrid.ChangeColumnsCount(changedCount);
+            else
+                excelGrid.RefreshDataGridValue();
         }
 
         public override void OnApplyTemplate()
@@ -227,6 +238,11 @@ namespace PracticalControls.Controls
 
             _expandoObjects = new ObservableCollection<ExpandoObject>(lstObjects);
             _datagrid.ItemsSource = _expandoObjects;
+        }
+
+        public void RefreshDataGridValue()
+        {
+            SetDataGridValue(this.ItemsSource as IList<List<string>>, false);
         }
 
         public void SetDataGridValue(IList<List<string>> lstData, bool needRecreate = true)
@@ -351,10 +367,8 @@ namespace PracticalControls.Controls
             var lstObjects = _datagrid.SelectedCells.Select(o => o.Item).Cast<ExpandoObject>().Distinct().ToList();
             foreach (var obj in lstObjects)
             {
-                _expandoObjects.Remove(obj);
+                DeleteRow(_expandoObjects.IndexOf(obj));
             }
-
-            SaveDataGridValue();
             _datagrid.Items.Refresh();
         }
 
@@ -368,10 +382,8 @@ namespace PracticalControls.Controls
             var lstColumns = _datagrid.SelectedCells.Select(o => o.Column).Distinct().ToList();
             foreach (var column in lstColumns)
             {
-                _datagrid.Columns.Remove(column);
+                DeleteCol(_datagrid.Columns.IndexOf(column));
             }
-
-            SaveDataGridValue();
             RefreshColumnsHeader();
         }
 
@@ -390,12 +402,19 @@ namespace PracticalControls.Controls
         {
             DataGridTextColumn newCol = new DataGridTextColumn();
             newCol.Width = DefaulgColumnWidth;
-
-            Binding binding = new Binding(ColumnPrefix + this.ColumnsCount);
-            binding.Mode = BindingMode.TwoWay;
-            newCol.Binding = binding;
-
             _datagrid.Columns.Insert(insertIndex, newCol);
+
+            //右移
+            foreach (var obj in _expandoObjects)
+            {
+                IDictionary<string, object> dic = obj as IDictionary<string, object>;
+                for (int i = _datagrid.Columns.Count - 1; i > insertIndex; i--)
+                {
+                    dic[$"{ColumnPrefix}{i}"] = dic[$"{ColumnPrefix}{i - 1}"];
+                }
+
+                dic[$"{ColumnPrefix}{insertIndex}"] = "";
+            }
 
             RefreshColumnsHeader(insertIndex);
         }
@@ -403,13 +422,22 @@ namespace PracticalControls.Controls
         private void DeleteRow(int index)
         {
             _expandoObjects.RemoveAt(index);
-            _datagrid.Items.Refresh();
         }
 
         private void DeleteCol(int index)
         {
             _datagrid.Columns.RemoveAt(index);
-            RefreshColumnsHeader(index);
+
+            //左移
+            foreach (var obj in _expandoObjects)
+            {
+                IDictionary<string, object> dic = obj as IDictionary<string, object>;
+                for (int i = index; i < _datagrid.Columns.Count; i++)
+                {
+                    dic[$"{ColumnPrefix}{i}"] = dic[$"{ColumnPrefix}{i + 1}"];
+                }
+                dic.Remove($"{ColumnPrefix}{_datagrid.Columns.Count}");
+            }
         }
 
         private void Clear()
@@ -419,9 +447,40 @@ namespace PracticalControls.Controls
 
         private void RefreshColumnsHeader(int startIndex = 0)
         {
-            for (int i = startIndex; i < this.ColumnsCount; i++)
+            int columnsCount = _datagrid.Columns.Count;
+            for (int i = startIndex; i < columnsCount; i++)
             {
                 _datagrid.Columns[i].Header = CommonHelper.Instance.NumberToSystem26(i);
+
+                //重置binding
+                Binding binding = new Binding(ColumnPrefix + i);
+                binding.Mode = BindingMode.TwoWay;
+                (_datagrid.Columns[i] as DataGridTextColumn).Binding = binding;
+            }
+        }
+
+        private void ChangeColumnsCount(int changedColumnsCount)
+        {
+            if (changedColumnsCount != 0)
+            {
+                if (changedColumnsCount > 0)
+                {
+                    int insertIndex = this.ColumnsCount - changedColumnsCount;
+                    for (int i = 0; i < changedColumnsCount; i++)
+                    {
+                        this.InsertCol(insertIndex + i);
+                    }
+                }
+                else if (changedColumnsCount < 0)
+                {
+                    int deleteIndex = this.ColumnsCount + changedColumnsCount;
+                    for (int i = 0; i < -changedColumnsCount; i++)
+                    {
+                        this.DeleteCol(deleteIndex - i);
+                    }
+                }
+                this.RefreshColumnsHeader();
+                this.RefreshDataGridValue();
             }
         }
         #endregion
