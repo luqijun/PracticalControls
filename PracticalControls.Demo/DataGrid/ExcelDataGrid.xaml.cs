@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using PracticalControls.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -37,40 +38,28 @@ namespace PracticalControls.Demo.DataGrid
     public class ExcelDataGridViewModel : ViewModelBase
     {
 
-        private ObservableCollection<List<string>> _lstData;
+        private ExcelGridCollection<List<string>> _lstData;
 
-        public ObservableCollection<List<string>> LstData
+        public ExcelGridCollection<List<string>> LstData
         {
             get { return _lstData; }
             set { Set(ref _lstData, value); }
-        }
-
-        private int _notifyColumnsCount;
-
-        public int NotifyColumnsCount
-        {
-            get { return _notifyColumnsCount; }
-            set
-            {
-                if (Set(ref _notifyColumnsCount, value))
-                    _notifyColumnsCount = 0;
-            }
         }
 
 
         public ExcelDataGridViewModel()
         {
             //Default Data
-            ObservableCollection<List<string>> lstDefaultData = new ObservableCollection<List<string>>();
-            for (int i = 0; i < 10; i++)
+            List<List<string>> lstDefaultData = new List<List<string>>();
+            for (int i = 0; i < 5; i++)
             {
                 lstDefaultData.Add(new List<string>());
-                for (int j = 0; j < 10; j++)
+                for (int j = 0; j < 8; j++)
                 {
                     lstDefaultData[i].Add(string.Empty);
                 }
             }
-            LstData = lstDefaultData;
+            LstData = new ExcelGridCollection<List<string>>(lstDefaultData);
         }
 
         private RelayCommand _addRowCommand;
@@ -92,7 +81,24 @@ namespace PracticalControls.Demo.DataGrid
         private void ExcuteAddColCommand(object obj)
         {
             this.LstData[0].Add("123");
-            this.NotifyColumnsCount = 1;
+            this.LstData.ChangeColumnsCount(1);
+        }
+
+        private RelayCommand _modifyValueCommand;
+
+        public RelayCommand ModifyValueCommand =>
+            _modifyValueCommand ?? (_modifyValueCommand = new RelayCommand(ExcuteModifyValueCommand));
+
+        private void ExcuteModifyValueCommand()
+        {
+            this.LstData[3][2] = "32";
+            this.LstData.RefreshValue(3, 2);
+
+            this.LstData[0][0] = "00";
+            this.LstData.RefreshValue(0, 0);
+
+            this.LstData[this.LstData.Count - 1][this.LstData[0].Count - 1] = "NaN";
+            this.LstData.RefreshValue(this.LstData.Count - 1, this.LstData[0].Count - 1);
         }
     }
 }

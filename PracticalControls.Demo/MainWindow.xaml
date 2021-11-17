@@ -7,18 +7,18 @@
         xmlns:dg="clr-namespace:PracticalControls.Demo.DataGrid"
         xmlns:tv="clr-namespace:PracticalControls.Demo.TreeView"
         mc:Ignorable="d"
-        Title="PracticalControls" Height="800" Width="1200">
+        Title="PracticalControls" Height="600" Width="1000">
     <Grid>
         <TabControl>
             <TabItem Header="DataGrid">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <dg:TreeDataGrid/>
-                    <dg:ExcelDataGrid Grid.Row="1"/>
-                </Grid>
+                <TabControl>
+                    <TabItem Header="ExcelDataGrid">
+                        <dg:ExcelDataGrid/>
+                    </TabItem>
+                    <TabItem Header="TreeDataGrid">
+                        <dg:TreeDataGrid/>
+                    </TabItem>
+                </TabControl>
             </TabItem>
             <TabItem Header="TreeView">
                 <tv:DraggableTreeView/>

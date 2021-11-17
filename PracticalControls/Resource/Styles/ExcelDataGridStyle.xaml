@@ -8,14 +8,18 @@
     </Style>
     
     <Style TargetType="controls:ExcelDataGrid">
+        <Setter Property="Height" Value="200"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
                     <Grid>
                         <DataGrid x:Name="PART_DG" 
+                                  VirtualizingPanel.IsVirtualizing="True" 
+                                  VirtualizingPanel.IsContainerVirtualizable="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling"
                                   ItemsSource="{Binding LstExpandedObject}"
                                   CanUserSortColumns="False"   
-                                  AutoGenerateColumns="False" 
+                                  AutoGenerateColumns="False"
                                   CanUserAddRows="False" 
                                   SelectionUnit="CellOrRowHeader" 
                                   SelectionMode="Extended" 
