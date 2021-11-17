@@ -4,8 +4,10 @@ using PracticalControls.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,8 +18,20 @@ using System.Windows.Input;
 namespace PracticalControls.Controls
 {
     [TemplatePart(Name = nameof(PART_DG), Type = typeof(DataGrid))]
-    public class ExcelDataGrid : Control
+    public class ExcelDataGrid : Control, INotifyPropertyChanged
     {
+        #region INotifyPropertyChanged 接口实现
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propName = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propName));
+        }
+
+        #endregion
+
         //const int DefaultRowsCount = 5;
         //const int DefaultColumnsCount = 8;
         const double DefaulgColumnWidth = 80.0;
@@ -39,7 +53,7 @@ namespace PracticalControls.Controls
         {
             get
             {
-                if (this.ItemsSource is IList<ExcelGridRow> lstData)
+                if (this.ItemsSource is IList<ExcelGridRow> lstData && lstData.Count > 0)
                     return lstData.Max(o => o.Cells.Count);
                 return 0;
             }
@@ -157,6 +171,7 @@ namespace PracticalControls.Controls
                 if (lstData is ExcelGridRowCollection collection)
                 {
                     collection.ExcelGrid = excelgrid;
+                    collection.CollectionChanged += (sender, e) => excelgrid.OnPropertyChanged("RowsCount");
                     excelgrid.BindDataGrid(collection);
                 }
             }
@@ -265,6 +280,8 @@ namespace PracticalControls.Controls
             this.ItemsSource.Insert(insertIndex, row);
             if (needRefresh)
                 RefreshRowsHeader();
+
+            OnPropertyChanged("RowsCount");
         }
 
         public void InsertCol(int insertIndex, bool needRefresh = true)
@@ -288,6 +305,8 @@ namespace PracticalControls.Controls
 
             if (needRefresh)
                 RefreshColumnsHeader(insertIndex);
+
+            OnPropertyChanged("ColumnsCount");
         }
 
         public void DeleteRow(int deleteIndex, bool needRefresh = true)
@@ -295,13 +314,13 @@ namespace PracticalControls.Controls
             this.ItemsSource.RemoveAt(deleteIndex);
             if (needRefresh)
                 RefreshRowsHeader();
+
+            OnPropertyChanged("RowsCount");
         }
 
         public void DeleteCol(int deleteIndex, bool needRefresh = true)
         {
             _datagrid.Columns.RemoveAt(deleteIndex);
-
-            AlignRowsColsCount(this.ItemsSource, this.ItemsSource.Count, _datagrid.Columns.Count);
 
             //左移
             foreach (var row in this.ItemsSource)
@@ -310,11 +329,14 @@ namespace PracticalControls.Controls
                 {
                     row[i].Value = row[i + 1].Value;
                 }
-                row.Cells.RemoveAt(row.Cells.Count - 1);
             }
+
+            AlignRowsColsCount(this.ItemsSource, this.ItemsSource.Count, _datagrid.Columns.Count);
 
             if (needRefresh)
                 RefreshColumnsHeader(deleteIndex);
+
+            OnPropertyChanged("ColumnsCount");
         }
 
         public void Clear()
@@ -371,6 +393,9 @@ namespace PracticalControls.Controls
             }
 
             _datagrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding { Source = this.ItemsSource });
+
+            OnPropertyChanged("RowsCount");
+            OnPropertyChanged("ColumnsCount");
         }
 
         public void AlignRowsColsCount(IList<ExcelGridRow> itemsSource, int maxRowsCount, int maxColsCount)
@@ -396,7 +421,7 @@ namespace PracticalControls.Controls
                     while (data.Cells.Count < maxColsCount)
                         data.Cells.Add(new ExcelGridCell());
                 }
-                else
+                else if (data.Cells.Count > maxColsCount)
                 {
                     while (data.Cells.Count > maxColsCount)
                         data.Cells.RemoveAt(data.Cells.Count - 1);
@@ -422,7 +447,7 @@ namespace PracticalControls.Controls
                 }
                 else if (offset < 0)
                 {
-                    int deleteIndex = _datagrid.Columns.Count;
+                    int deleteIndex = _datagrid.Columns.Count - 1;
                     for (int i = 0; i < -offset; i++)
                     {
                         this.DeleteCol(deleteIndex - i);

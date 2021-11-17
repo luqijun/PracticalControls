@@ -13,9 +13,6 @@
                 <ControlTemplate>
                     <Grid>
                         <DataGrid x:Name="PART_DG" 
-                                  VirtualizingPanel.IsVirtualizing="True" 
-                                  VirtualizingPanel.IsContainerVirtualizable="True"
-                                  VirtualizingPanel.VirtualizationMode="Recycling"
                                   ItemsSource="{Binding LstExpandedObject}"
                                   CanUserSortColumns="False"   
                                   AutoGenerateColumns="False"

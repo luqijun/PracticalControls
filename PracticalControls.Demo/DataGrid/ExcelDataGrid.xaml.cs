@@ -59,30 +59,38 @@ namespace PracticalControls.Demo.DataGrid
             LstData = new ExcelGridRowCollection(lstDefaultData);
         }
 
-        private RelayCommand _addRowCommand;
+        private RelayCommand<string> _addRemoveRowCommand;
 
-        public RelayCommand AddRowCommand =>
-            _addRowCommand ?? (_addRowCommand = new RelayCommand(ExcuteAddRowCommand));
+        public RelayCommand<string> AddRemoveRowCommand =>
+            _addRemoveRowCommand ?? (_addRemoveRowCommand = new RelayCommand<string>(ExcuteAddRemoveRowCommand));
 
-        private void ExcuteAddRowCommand()
+        private void ExcuteAddRemoveRowCommand(string tag)
         {
-            ExcelGridRow row = new ExcelGridRow(8);
-            this.LstData.Insert(1, row);
-            row[0].Value = "2";
-            row[1].Value = "3";
+            switch (tag)
+            {
+                case "0":
+                    if (this.LstData.Count > 0)
+                        this.LstData.RemoveAt(this.LstData.Count - 1);
+                    break;
+                case "1":
+                    ExcelGridRow row = new ExcelGridRow(this.LstData.ExcelGrid.ColumnsCount);
+                    this.LstData.Add(row);
+                    break;
+                default:
+                    break;
+            }
         }
 
-        private RelayCommand<object> _addColCommand;
+        private RelayCommand<string> _addRemoveColCommand;
 
-        public RelayCommand<object> AddColCommand =>
-            _addColCommand ?? (_addColCommand = new RelayCommand<object>(ExcuteAddColCommand));
+        public RelayCommand<string> AddRemoveColCommand =>
+            _addRemoveColCommand ?? (_addRemoveColCommand = new RelayCommand<string>(ExcuteAddRemoveColCommand));
 
 
-        private void ExcuteAddColCommand(object obj)
+        private void ExcuteAddRemoveColCommand(string tag)
         {
-            this.LstData.AddRemoveColumns(1);
-
-            this.LstData[0].Cells.LastOrDefault().Value = "123";
+            int offset = tag == "0" ? -1 : 1;
+            this.LstData.AddRemoveColumns(offset);
         }
 
         private RelayCommand _modifyValueCommand;

@@ -13,11 +13,35 @@
             <RowDefinition Height=" 40"/>
             <RowDefinition Height=" *"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Button Content="VM添加行" Width="80" Height="30" Margin="5,0" Command="{Binding AddRowCommand}"/> 
-            <Button Content="VM添加列" Width="80" Height="30" Margin="5,0" Command="{Binding AddColCommand}"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button Content="VM添加行" Width="80" Height="30" Margin="5,0" Command="{Binding AddRemoveRowCommand}" CommandParameter="1"/>
+            <Button Content="VM添加列" Width="80" Height="30" Margin="5,0" Command="{Binding AddRemoveColCommand}" CommandParameter="1"/>
             <Button Content="VM修改值" Width="80" Height="30" Margin="5,0" Command="{Binding ModifyValueCommand}"/>
         </StackPanel>
-        <controls:ExcelDataGrid Grid.Row="1" ItemsSource="{Binding LstData}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="导入数据" Width="80" Height="24" Margin="5,0" Padding="0" Command="{Binding AddRowCommand}"/>
+            <Button Content="导出数据" Width="80" Height="24" Margin="5,0" Padding="0" Command="{Binding AddRowCommand}"/>
+            <StackPanel Orientation="Horizontal" Margin="5,0">
+                <TextBlock Text="行数:" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding RowsCount, ElementName=excelGrid,Mode=OneWay}" MinWidth="30" Height="24" VerticalAlignment="Center" IsReadOnly="True"/>
+                <Button Content="+" Width="24" Height="24" Margin="5,0" Padding="0" 
+                        VerticalAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding AddRemoveRowCommand}" CommandParameter="1"/>
+                <Button Content="-" Width="24" Height="24" Margin="0,0" Padding="0" 
+                        VerticalAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding AddRemoveRowCommand}" CommandParameter="0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5,0">
+                <TextBlock Text="列数:" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding ColumnsCount, ElementName=excelGrid,Mode=OneWay}" MinWidth="30" Height="24" VerticalAlignment="Center" IsReadOnly="True"/>
+                <Button Content="+" Width="24" Height="24" Margin="5,0" Padding="0" 
+                        VerticalAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding AddRemoveColCommand}" CommandParameter="1"/>
+                <Button Content="-" Width="24" Height="24" Margin="0,0" Padding="0" 
+                        VerticalAlignment="Center" VerticalContentAlignment="Center"
+                        Command="{Binding AddRemoveColCommand}" CommandParameter="0"/>
+            </StackPanel>
+        </StackPanel>
+        <controls:ExcelDataGrid x:Name="excelGrid" Grid.Row="1" ItemsSource="{Binding LstData}" />
     </Grid>
 </UserControl>
