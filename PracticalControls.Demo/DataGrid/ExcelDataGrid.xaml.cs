@@ -38,9 +38,9 @@ namespace PracticalControls.Demo.DataGrid
     public class ExcelDataGridViewModel : ViewModelBase
     {
 
-        private ExcelGridCollection<List<string>> _lstData;
+        private ExcelGridRowCollection _lstData;
 
-        public ExcelGridCollection<List<string>> LstData
+        public ExcelGridRowCollection LstData
         {
             get { return _lstData; }
             set { Set(ref _lstData, value); }
@@ -50,16 +50,13 @@ namespace PracticalControls.Demo.DataGrid
         public ExcelDataGridViewModel()
         {
             //Default Data
-            List<List<string>> lstDefaultData = new List<List<string>>();
-            for (int i = 0; i < 5; i++)
+            List<ExcelGridRow> lstDefaultData = new List<ExcelGridRow>();
+            for (int i = 0; i < 10; i++)
             {
-                lstDefaultData.Add(new List<string>());
-                for (int j = 0; j < 8; j++)
-                {
-                    lstDefaultData[i].Add(string.Empty);
-                }
+                ExcelGridRow row = new ExcelGridRow(8);
+                lstDefaultData.Add(row);
             }
-            LstData = new ExcelGridCollection<List<string>>(lstDefaultData);
+            LstData = new ExcelGridRowCollection(lstDefaultData);
         }
 
         private RelayCommand _addRowCommand;
@@ -69,7 +66,10 @@ namespace PracticalControls.Demo.DataGrid
 
         private void ExcuteAddRowCommand()
         {
-            this.LstData.Insert(1, new List<string>() { "2", "3" });
+            ExcelGridRow row = new ExcelGridRow(8);
+            this.LstData.Insert(1, row);
+            row[0].Value = "2";
+            row[1].Value = "3";
         }
 
         private RelayCommand<object> _addColCommand;
@@ -80,8 +80,9 @@ namespace PracticalControls.Demo.DataGrid
 
         private void ExcuteAddColCommand(object obj)
         {
-            this.LstData[0].Add("123");
-            this.LstData.ChangeColumnsCount(1);
+            this.LstData.AddRemoveColumns(1);
+
+            this.LstData[0].Cells.LastOrDefault().Value = "123";
         }
 
         private RelayCommand _modifyValueCommand;
@@ -91,14 +92,10 @@ namespace PracticalControls.Demo.DataGrid
 
         private void ExcuteModifyValueCommand()
         {
-            this.LstData[3][2] = "32";
-            this.LstData.RefreshValue(3, 2);
+            this.LstData[3][2].Value = "32";
+            this.LstData[0][0].Value = "00";
 
-            this.LstData[0][0] = "00";
-            this.LstData.RefreshValue(0, 0);
-
-            this.LstData[this.LstData.Count - 1][this.LstData[0].Count - 1] = "NaN";
-            this.LstData.RefreshValue(this.LstData.Count - 1, this.LstData[0].Count - 1);
+            this.LstData[this.LstData.Count - 1][this.LstData[0].Cells.Count - 1].Value = "NaN";
         }
     }
 }

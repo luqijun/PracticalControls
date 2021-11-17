@@ -8,7 +8,6 @@
     </Style>
     
     <Style TargetType="controls:ExcelDataGrid">
-        <Setter Property="Height" Value="200"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
