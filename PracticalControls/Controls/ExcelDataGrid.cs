@@ -18,8 +18,8 @@ namespace PracticalControls.Controls
     [TemplatePart(Name = nameof(PART_DG), Type = typeof(DataGrid))]
     public class ExcelDataGrid : Control
     {
-        const int DefaultRowsCount = 5;
-        const int DefaultColumnsCount = 8;
+        //const int DefaultRowsCount = 5;
+        //const int DefaultColumnsCount = 8;
         const double DefaulgColumnWidth = 80.0;
         const string ColumnPrefix = "Column";
 
@@ -34,7 +34,7 @@ namespace PracticalControls.Controls
         ObservableCollection<ExpandoObject> _expandoObjects;
         public bool IsSaving { get; set; }
 
-        public int RowsCount => _expandoObjects == null ? DefaultColumnsCount : _expandoObjects.Count;
+        public int RowsCount => _expandoObjects == null ? 0 : _expandoObjects.Count;
 
         public int ColumnsCount
         {
@@ -42,7 +42,7 @@ namespace PracticalControls.Controls
             {
                 if (ItemsSource is IList<List<string>> lstData)
                     return lstData.Max(o => o.Count);
-                return DefaultColumnsCount;
+                return 0;
             }
         }
 
@@ -412,8 +412,7 @@ namespace PracticalControls.Controls
         public void LoadDataGridValue(IList<List<string>> lstData, int startRow, int startCol, int endRow, int endCol, bool needRecreate = true)
         {
             if (needRecreate)
-                CreateDataGrid(lstData.Count == 0 ? DefaultRowsCount : lstData.Count,
-                               lstData.Count == 0 ? DefaultColumnsCount : lstData.Max(o => o.Count));
+                CreateDataGrid(lstData.Count, lstData.Max(o => o.Count));
 
             //行列对齐
             int maxRowsCount = Math.Max(lstData.Count, endRow + 1);
