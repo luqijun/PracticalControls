@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PracticalControls.Demo.DataGrid"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:controls="clr-namespace:PracticalControls.Controls;assembly=PracticalControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -14,33 +15,33 @@
             <RowDefinition Height=" *"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <Button Content="VM添加行" Width="80" Height="30" Margin="5,0" Command="{Binding AddRemoveRowCommand}" CommandParameter="1"/>
-            <Button Content="VM添加列" Width="80" Height="30" Margin="5,0" Command="{Binding AddRemoveColCommand}" CommandParameter="1"/>
-            <Button Content="VM修改值" Width="80" Height="30" Margin="5,0" Command="{Binding ModifyValueCommand}"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="导入数据" Width="80" Height="24" Margin="5,0" Padding="0" Command="{Binding ImportDataCommand}"/>
-            <Button Content="导出数据" Width="80" Height="24" Margin="5,0" Padding="0" Command="{Binding ExportDataCommand}"/>
+            <Button Content="导入数据" Width="80" Height="28" Margin="5,0" Padding="0" Command="{Binding ImportDataCommand}" Style="{DynamicResource MahApps.Styles.Button.MetroSquare.Accent}"/>
+            <Button Content="导出数据" Width="80" Height="28" Margin="5,0" Padding="0" Command="{Binding ExportDataCommand}" Style="{DynamicResource MahApps.Styles.Button.MetroSquare.Accent}"/>
             <StackPanel Orientation="Horizontal" Margin="5,0">
                 <TextBlock Text="行数:" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding RowsCount, ElementName=excelGrid,Mode=OneWay}" MinWidth="30" Height="24" VerticalAlignment="Center" IsReadOnly="True"/>
-                <Button Content="+" Width="20" Height="20" Margin="5,0" Padding="0" 
-                        VerticalAlignment="Center" VerticalContentAlignment="Center"
-                        Command="{Binding AddRemoveRowCommand}" CommandParameter="1"/>
-                <Button Content="-" Width="20" Height="20" Margin="0,0" Padding="0" 
-                        VerticalAlignment="Center" VerticalContentAlignment="Center"
-                        Command="{Binding AddRemoveRowCommand}" CommandParameter="0"/>
+                <controls:NumericUpDownEx Height="24" Minimum="0" IsReadOnly="True"
+                                          Value="{Binding RowsCount, ElementName=excelGrid,Mode=OneWay}"
+                                          Command="{Binding AddRemoveRowCommand}" 
+                                          UpParameter="1" DownParameter="0"
+                                          BorderBrush="#FF569DE5"
+                                          mah:ControlsHelper.FocusBorderBrush="#FF569DE5"  
+                                          mah:ControlsHelper.MouseOverBorderBrush="#FF569DE5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5,0">
                 <TextBlock Text="列数:" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding ColumnsCount, ElementName=excelGrid,Mode=OneWay}" MinWidth="30" Height="24" VerticalAlignment="Center" IsReadOnly="True"/>
-                <Button Content="+" Width="20" Height="20" Margin="5,0" Padding="0" 
-                        VerticalAlignment="Center" VerticalContentAlignment="Center"
-                        Command="{Binding AddRemoveColCommand}" CommandParameter="1"/>
-                <Button Content="-" Width="20" Height="20" Margin="0,0" Padding="0" 
-                        VerticalAlignment="Center" VerticalContentAlignment="Center"
-                        Command="{Binding AddRemoveColCommand}" CommandParameter="0"/>
+                <controls:NumericUpDownEx Height="24" Minimum="0" IsReadOnly="True"
+                                          Value="{Binding ColumnsCount, ElementName=excelGrid,Mode=OneWay}"
+                                          Command="{Binding AddRemoveColCommand}" 
+                                          UpParameter="1" DownParameter="0"
+                                          BorderBrush="#FF569DE5"
+                                          mah:ControlsHelper.FocusBorderBrush="#FF569DE5"  
+                                          mah:ControlsHelper.MouseOverBorderBrush="#FF569DE5"/>
             </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="VM添加行" Width="80" Height="30" Margin="5,0" Command="{Binding AddRemoveRowCommand}" CommandParameter="1"/>
+            <Button Content="VM添加列" Width="80" Height="30" Margin="5,0" Command="{Binding AddRemoveColCommand}" CommandParameter="1"/>
+            <Button Content="VM修改值" Width="80" Height="30" Margin="5,0" Command="{Binding ModifyValueCommand}"/>
         </StackPanel>
         <controls:ExcelDataGrid x:Name="excelGrid" Grid.Row="1" ItemsSource="{Binding LstData}" />
     </Grid>

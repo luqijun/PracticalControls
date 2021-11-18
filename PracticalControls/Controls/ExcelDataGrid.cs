@@ -53,8 +53,13 @@ namespace PracticalControls.Controls
         {
             get
             {
-                if (this.ItemsSource is IList<ExcelGridRow> lstData && lstData.Count > 0)
-                    return lstData.Max(o => o.Cells.Count);
+                if (this.ItemsSource is IList<ExcelGridRow> collection)
+                {
+                    if (collection.Count > 0)
+                        return collection.Max(o => o.Cells.Count);
+                    else
+                        return _datagrid == null ? 0 : _datagrid.Columns.Count;
+                }
                 return 0;
             }
         }
