@@ -10,7 +10,7 @@
     <Grid>
         <TabControl>
             <TabItem Header="RichText">
-                <views:RichTextControl/>
+                <views:MultiRowTextBlock/>
             </TabItem>
             <TabItem Header="DataGrid">
                 <TabControl>
