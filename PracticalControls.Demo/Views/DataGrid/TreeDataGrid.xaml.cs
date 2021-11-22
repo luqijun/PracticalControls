@@ -19,7 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PracticalControls.Demo.DataGrid
+namespace PracticalControls.Demo.Views
 {
     /// <summary>
     /// TreeDataGrid.xaml 的交互逻辑

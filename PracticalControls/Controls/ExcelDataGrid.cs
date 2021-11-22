@@ -381,26 +381,35 @@ namespace PracticalControls.Controls
 
         public void BindDataGrid(ExcelGridRowCollection itemsSource)
         {
-            _datagrid.Columns.Clear();
-            int columns = itemsSource.Max(row => row.Cells.Count);
-            for (int i = 0; i < columns; i++)
+            new System.Threading.Thread(() =>
             {
-                DataGridTextColumn newCol = new DataGridTextColumn();
+                while (_datagrid == null)
+                    System.Threading.Thread.Sleep(10);
 
-                Binding binding = new Binding(GetColumnBindingPath(i));
-                binding.Mode = BindingMode.TwoWay;
-                binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                newCol.Binding = binding;
-                newCol.Width = DefaulgColumnWidth;
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    _datagrid.Columns.Clear();
+                    int columns = itemsSource.Max(row => row.Cells.Count);
+                    for (int i = 0; i < columns; i++)
+                    {
+                        DataGridTextColumn newCol = new DataGridTextColumn();
 
-                newCol.Header = CommonHelper.Instance.NumberToSystem26(i);
-                _datagrid.Columns.Add(newCol);
-            }
+                        Binding binding = new Binding(GetColumnBindingPath(i));
+                        binding.Mode = BindingMode.TwoWay;
+                        binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                        newCol.Binding = binding;
+                        newCol.Width = DefaulgColumnWidth;
 
-            _datagrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding { Source = this.ItemsSource });
+                        newCol.Header = CommonHelper.Instance.NumberToSystem26(i);
+                        _datagrid.Columns.Add(newCol);
+                    }
 
-            OnPropertyChanged("RowsCount");
-            OnPropertyChanged("ColumnsCount");
+                    _datagrid.SetBinding(DataGrid.ItemsSourceProperty, new Binding { Source = this.ItemsSource });
+
+                    OnPropertyChanged("RowsCount");
+                    OnPropertyChanged("ColumnsCount");
+                }));
+            }).Start();
         }
 
         public void AlignRowsColsCount(IList<ExcelGridRow> itemsSource, int maxRowsCount, int maxColsCount)
