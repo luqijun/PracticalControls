@@ -9,7 +9,7 @@
         Title="PracticalControls" Height="600" Width="1000">
     <Grid>
         <TabControl>
-            <TabItem Header="RichText">
+            <TabItem Header="MultiRowText">
                 <views:MultiRowTextBlock/>
             </TabItem>
             <TabItem Header="DataGrid">

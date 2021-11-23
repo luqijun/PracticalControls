@@ -13,58 +13,8 @@ using System.Windows.Media;
 
 namespace PracticalControls.Controls
 {
-    public class MultiRowTextBlock : TextBlock
+    public class MultiRowTextBlock : SelectableTextBlock
     {
-        //TextPointer StartSelectPosition;
-        //TextPointer EndSelectPosition;
-        //public String SelectedText = "";
-
-        //public delegate void TextSelectedHandler(string SelectedText);
-        //public event TextSelectedHandler TextSelected;
-
-        //protected override void OnMouseDown(MouseButtonEventArgs e)
-        //{
-        //    base.OnMouseDown(e);
-        //    Point mouseDownPoint = e.GetPosition(this);
-        //    StartSelectPosition = this.GetPositionFromPoint(mouseDownPoint, true);
-        //}
-
-        //protected override void OnMouseUp(MouseButtonEventArgs e)
-        //{
-        //    base.OnMouseUp(e);
-        //    Point mouseUpPoint = e.GetPosition(this);
-        //    EndSelectPosition = this.GetPositionFromPoint(mouseUpPoint, true);
-
-        //    TextRange otr = new TextRange(this.ContentStart, this.ContentEnd);
-        //    otr.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.GreenYellow));
-
-        //    TextRange ntr = new TextRange(StartSelectPosition, EndSelectPosition);
-        //    ntr.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.White));
-
-        //    SelectedText = ntr.Text;
-        //    if (!(TextSelected == null))
-        //    {
-        //        TextSelected(SelectedText);
-        //    }
-        //}
-
-        static MultiRowTextBlock()
-        {
-            FocusableProperty.OverrideMetadata(typeof(MultiRowTextBlock), new FrameworkPropertyMetadata(true));
-            TextEditorWrapper.RegisterCommandHandlers(typeof(MultiRowTextBlock), true, true, true);
-
-            // remove the focus rectangle around the control
-            FocusVisualStyleProperty.OverrideMetadata(typeof(MultiRowTextBlock), new FrameworkPropertyMetadata((object)null));
-        }
-
-        private readonly TextEditorWrapper _editor;
-
-        public MultiRowTextBlock()
-        {
-            _editor = TextEditorWrapper.Create(this);
-        }
-
-
         public object ItemsSource
         {
             get { return (object)GetValue(ItemsSourceProperty); }
@@ -81,55 +31,115 @@ namespace PracticalControls.Controls
             if (rows != null)
             {
                 btb.ShowContent(rows);
+
+                if (rows is System.Collections.Specialized.INotifyCollectionChanged nc)
+                {
+                    nc.CollectionChanged += (sender, e) => btb.ShowContent(btb.ItemsSource as IList<TextBlockRow>);
+                }
             }
         }
+
+        public Brush RowHeaderForegroud
+        {
+            get { return (Brush)GetValue(RowHeaderForegroudProperty); }
+            set { SetValue(RowHeaderForegroudProperty, value); }
+        }
+
+        public static readonly DependencyProperty RowHeaderForegroudProperty =
+            DependencyProperty.Register("RowHeaderForegroud", typeof(Brush), typeof(MultiRowTextBlock), new PropertyMetadata(null));
+
+
+
+        public Brush RowContentBackground
+        {
+            get { return (Brush)GetValue(RowContentBackgroundProperty); }
+            set { SetValue(RowContentBackgroundProperty, value); }
+        }
+
+        public static readonly DependencyProperty RowContentBackgroundProperty =
+            DependencyProperty.Register("RowContentBackground", typeof(Brush), typeof(MultiRowTextBlock), new PropertyMetadata(null));
+
+
 
         private void ShowContent(IList<TextBlockRow> contentRows)
         {
             this.Inlines.Clear();
             foreach (var row in contentRows)
             {
-                this.Inlines.Add($"{row.Header} {row.Content}\r\n");
+                Run run;
+
+                //rowHeader
+                run = new Run($"{row.Header}");
+                if (this.RowHeaderForegroud != null)
+                    run.Foreground = RowHeaderForegroud;
+                this.Inlines.Add(run);
+
+                //blank space
+                this.Inlines.Add("     ");
+
+                //content
+                run = new Run($"{row.Content }");
+                if (this.RowContentBackground != null)
+                    run.Background = RowContentBackground;
+                this.Inlines.Add(run);
+
+                //fill dots
+                string dots = "·";
+                for (int i = 0; i < 100; i++)
+                    dots += "  ·";
+                run = new Run($"  {dots}\r\n");
+                run.BaselineAlignment = BaselineAlignment.TextTop;
+                this.Inlines.Add(run);
+
             }
         }
-    }
 
 
-    class TextEditorWrapper
-    {
-        private static readonly Type TextEditorType = Type.GetType("System.Windows.Documents.TextEditor, PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
-        private static readonly PropertyInfo IsReadOnlyProp = TextEditorType.GetProperty("IsReadOnly", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static readonly PropertyInfo TextViewProp = TextEditorType.GetProperty("TextView", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static readonly MethodInfo RegisterMethod = TextEditorType.GetMethod("RegisterCommandHandlers",
-            BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(Type), typeof(bool), typeof(bool), typeof(bool) }, null);
+        #region Selectable
 
-        private static readonly Type TextContainerType = Type.GetType("System.Windows.Documents.ITextContainer, PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
-        private static readonly PropertyInfo TextContainerTextViewProp = TextContainerType.GetProperty("TextView");
+        //TextPointer StartSelectPosition;
+        //TextPointer EndSelectPosition;
+        //public string SelectedText = "";
 
-        private static readonly PropertyInfo TextContainerProp = typeof(TextBlock).GetProperty("TextContainer", BindingFlags.Instance | BindingFlags.NonPublic);
+        //public delegate void TextSelectedHandler(string SelectedText);
+        //public event TextSelectedHandler TextSelected;
 
-        public static void RegisterCommandHandlers(Type controlType, bool acceptsRichContent, bool readOnly, bool registerEventListeners)
-        {
-            RegisterMethod.Invoke(null, new object[] { controlType, acceptsRichContent, readOnly, registerEventListeners });
-        }
+        //protected override void OnMouseDown(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseDown(e);
+        //    Point mouseDownPoint = e.GetPosition(this);
+        //    StartSelectPosition = this.GetPositionFromPoint(mouseDownPoint, true);
+        //}
 
-        public static TextEditorWrapper Create(TextBlock tb)
-        {
-            var textContainer = TextContainerProp.GetValue(tb);
+        //protected override void OnMouseMove(MouseEventArgs e)
+        //{
+        //    base.OnMouseMove(e);
 
-            var editor = new TextEditorWrapper(textContainer, tb, false);
-            IsReadOnlyProp.SetValue(editor._editor, true);
-            TextViewProp.SetValue(editor._editor, TextContainerTextViewProp.GetValue(textContainer));
+        //    if (e.LeftButton == MouseButtonState.Pressed)
+        //    {
+        //        this.Cursor = Cursors.IBeam;
+        //        Point mouseUpPoint = e.GetPosition(this);
+        //        EndSelectPosition = this.GetPositionFromPoint(mouseUpPoint, true);
 
-            return editor;
-        }
+        //        TextRange otr = new TextRange(this.ContentStart, this.ContentEnd);
+        //        otr.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Black));
 
-        private readonly object _editor;
+        //        TextRange ntr = new TextRange(StartSelectPosition, EndSelectPosition);
+        //        ntr.ApplyPropertyValue(TextElement.BackgroundProperty, new SolidColorBrush(Colors.LightBlue));
 
-        public TextEditorWrapper(object textContainer, FrameworkElement uiScope, bool isUndoEnabled)
-        {
-            _editor = Activator.CreateInstance(TextEditorType, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance,
-                null, new[] { textContainer, uiScope, isUndoEnabled }, null);
-        }
+        //        SelectedText = ntr.Text;
+        //        if (!(TextSelected == null))
+        //        {
+        //            TextSelected(SelectedText);
+        //        }
+        //    }
+        //}
+
+        //protected override void OnMouseUp(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseUp(e);
+        //}
+
+        #endregion
     }
 }

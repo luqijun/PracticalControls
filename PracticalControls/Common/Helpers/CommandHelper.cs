@@ -63,7 +63,7 @@ namespace PracticalControls.Common.Helpers
             }
         }
 
-        internal static bool CanExecuteCommandSource(ICommandSource commandSource, ICommand? theCommand)
+        internal static bool CanExecuteCommandSource(ICommandSource commandSource, ICommand theCommand)
         {
             var command = theCommand;
             if (command == null)

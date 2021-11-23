@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PracticalControls.Demo.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:controls="clr-namespace:PracticalControls.Controls;assembly=PracticalControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -13,6 +15,46 @@
         </DataTemplate>
     </UserControl.Resources>
     <Grid>
-        <controls:MultiRowTextBlock ItemsSource="{Binding LstTextRow}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid >
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="进制位数：" FontSize="14" VerticalAlignment="Center"/>
+                <ComboBox x:Name="cbxNumType" Width="100" Height="26"
+                          ItemsSource="{Binding DicNumType}"
+                          SelectedValue="{Binding SelNumType,Mode=TwoWay}"
+                          DisplayMemberPath="Value"
+                          SelectedValuePath="Key" 
+                          mah:ControlsHelper.FocusBorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                          mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding ReloadContentCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+                <TextBlock Text="显示列数：" FontSize="14" VerticalAlignment="Center" Margin="20,5,0,5"/>
+                <ComboBox x:Name="cbxColumnsCount" Width="50" Height="26"
+                          ItemsSource="{Binding LstColsCount}"
+                          SelectedItem="{Binding SelColsCount,Mode=TwoWay}"
+                          mah:ControlsHelper.FocusBorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                          mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding ReloadContentCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Visible">
+                <controls:MultiRowTextBlock ItemsSource="{Binding LstTextRow}" FontSize="16" LineHeight="24"
+                                        RowHeaderForegroud="#808080"
+                                        RowContentBackground="#F1F2EB" />
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>
