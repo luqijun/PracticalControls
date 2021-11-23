@@ -14,33 +14,21 @@
             <TextBlock Text="{Binding Text}"/>
         </DataTemplate>
     </UserControl.Resources>
-    <Grid>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid >
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="进制位数：" FontSize="14" VerticalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+                <TextBlock Text="进制位数：" FontSize="12" VerticalAlignment="Center"/>
                 <ComboBox x:Name="cbxNumType" Width="100" Height="26"
-                          ItemsSource="{Binding DicNumType}"
-                          SelectedValue="{Binding SelNumType,Mode=TwoWay}"
-                          DisplayMemberPath="Value"
-                          SelectedValuePath="Key" 
-                          mah:ControlsHelper.FocusBorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                          mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding ReloadContentCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ComboBox>
-                <TextBlock Text="显示列数：" FontSize="14" VerticalAlignment="Center" Margin="20,5,0,5"/>
-                <ComboBox x:Name="cbxColumnsCount" Width="50" Height="26"
-                          ItemsSource="{Binding LstColsCount}"
-                          SelectedItem="{Binding SelColsCount,Mode=TwoWay}"
-                          mah:ControlsHelper.FocusBorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                          mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                                      ItemsSource="{Binding DicNumType}"
+                                      SelectedValue="{Binding SelNumType,Mode=TwoWay}"
+                                      DisplayMemberPath="Value"
+                                      SelectedValuePath="Key" 
+                                      mah:ControlsHelper.FocusBorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                                      mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:InvokeCommandAction Command="{Binding ReloadContentCommand}"/>
@@ -48,12 +36,26 @@
                     </i:Interaction.Triggers>
                 </ComboBox>
             </StackPanel>
-        </Grid>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,10">
+                <TextBlock Text="显示列数：" FontSize="12" VerticalAlignment="Center" />
+                <ComboBox x:Name="cbxColumnsCount" Width="50" Height="26"
+                                      ItemsSource="{Binding LstColsCount}"
+                                      SelectedItem="{Binding SelColsCount,Mode=TwoWay}"
+                                      mah:ControlsHelper.FocusBorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                                      mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding ReloadContentCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
         <Grid Grid.Row="1">
             <ScrollViewer HorizontalScrollBarVisibility="Visible">
-                <controls:MultiRowTextBlock ItemsSource="{Binding LstTextRow}" FontSize="16" LineHeight="24"
-                                        RowHeaderForegroud="#808080"
-                                        RowContentBackground="#F1F2EB" />
+                <controls:MultiRowTextBlock ItemsSource="{Binding LstTextRow}" FontSize="14" LineHeight="24"
+                                            RowHeaderForegroud="#808080"
+                                            RowContentBackground="#F1F2EB" />
             </ScrollViewer>
         </Grid>
     </Grid>

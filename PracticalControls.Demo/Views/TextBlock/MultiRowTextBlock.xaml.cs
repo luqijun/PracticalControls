@@ -136,8 +136,7 @@ namespace PracticalControls.Demo.Views
 
                 if (lstStr.Count == columnsCount)
                 {
-
-                    string content = string.Join(' ', lstStr);
+                    string content = string.Join("  ", lstStr);
                     lstRows.Add(new TextBlockRow($"行号：{(i / columnsCount).ToString("D8")}", content));
                     lstStr.Clear();
                 }
