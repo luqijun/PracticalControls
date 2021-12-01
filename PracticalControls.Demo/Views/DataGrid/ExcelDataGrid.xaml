@@ -43,6 +43,6 @@
             <Button Content="VM添加列" Width="80" Height="30" Margin="5,0" Command="{Binding AddRemoveColCommand}" CommandParameter="1"/>
             <Button Content="VM修改值" Width="80" Height="30" Margin="5,0" Command="{Binding ModifyValueCommand}"/>
         </StackPanel>
-        <controls:ExcelDataGrid x:Name="excelGrid" Grid.Row="1" ItemsSource="{Binding LstData}" />
+        <controls:ExcelDataGrid x:Name="excelGrid" Grid.Row="1" ItemsSource="{Binding LstData}"/>
     </Grid>
 </UserControl>

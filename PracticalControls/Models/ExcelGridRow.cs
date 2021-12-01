@@ -29,11 +29,11 @@ namespace PracticalControls.Models
             }
         }
 
-        public ExcelGridRow(int cellsCount)
+        public ExcelGridRow(int cellsCount, CellValueType valueType = CellValueType.String)
         {
             for (int i = 0; i < cellsCount; i++)
             {
-                _cells.Add(new ExcelGridCell());
+                _cells.Add(new ExcelGridCell(string.Empty, valueType));
             }
         }
     }
