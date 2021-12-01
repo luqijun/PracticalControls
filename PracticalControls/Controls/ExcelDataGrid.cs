@@ -136,7 +136,6 @@ namespace PracticalControls.Controls
             {
                 _datagrid.ContextMenu.DataContext = this;
                 _datagrid.LoadingRow += Datagrid_LoadingRow;
-                _datagrid.CellEditEnding += (s, e) => { };
             }
 
         }
@@ -402,6 +401,10 @@ namespace PracticalControls.Controls
                         binding.ValidatesOnDataErrors = true;
                         binding.ValidatesOnExceptions = true;
                         binding.NotifyOnValidationError = true;
+                        binding.ValidatesOnNotifyDataErrors = true;
+
+                        binding.NotifyOnSourceUpdated = true;
+                        binding.NotifyOnTargetUpdated = true;
                         foreach (var rule in binding.ValidationRules)
                         {
                             rule.ValidatesOnTargetUpdated = true;
