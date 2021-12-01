@@ -6,7 +6,11 @@
     <Style x:Key="dgRowHeaderStyle" TargetType="DataGridRowHeader" BasedOn="{StaticResource MahApps.Styles.DataGridRowHeader}">
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
     </Style>
-    
+
+    <Style x:Key="dgRowStyle" TargetType="DataGridRow" BasedOn="{StaticResource MahApps.Styles.DataGridRow}">
+        <Setter Property="ValidationErrorTemplate" Value="{x:Null}"/>
+    </Style>
+
     <Style TargetType="controls:ExcelDataGrid">
         <Setter Property="Template">
             <Setter.Value>
@@ -23,7 +27,8 @@
                                   GridLinesVisibility="All"
                                   HeadersVisibility="All"
                                   RowHeaderWidth="24"
-                                  RowHeaderStyle="{StaticResource dgRowHeaderStyle}">
+                                  RowHeaderStyle="{StaticResource dgRowHeaderStyle}"
+                                  RowStyle="{StaticResource dgRowStyle}">
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Add Row" Command="{Binding AddRowCommand}"/>

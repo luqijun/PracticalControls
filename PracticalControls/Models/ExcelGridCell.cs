@@ -54,7 +54,7 @@ namespace PracticalControls.Models
         public ExcelGridCell(object value, CellValueType valueType)
         {
             this.Value = value;
-            this.ValueType = CellValueType.Int;
+            this.ValueType = valueType;
         }
 
 
@@ -63,7 +63,7 @@ namespace PracticalControls.Models
             return this.Value.ToString();
         }
 
-        public void SetCellType(CellValueType valueType)
+        public void SetCellValueType(CellValueType valueType)
         {
             CellValueType oldValueType = this.ValueType;
             this.ValueType = valueType;

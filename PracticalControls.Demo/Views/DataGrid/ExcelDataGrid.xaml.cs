@@ -51,17 +51,43 @@ namespace PracticalControls.Demo.Views
             set { Set(ref _lstData, value); }
         }
 
+        private CellValueType _selCellVauleType;
+
+        public CellValueType SelCellValueType
+        {
+            get { return _selCellVauleType; }
+            set
+            {
+                if (Set(ref _selCellVauleType, value))
+                {
+                    this.LstData.SetCellValueType(value);
+                }
+            }
+        }
+
+        private List<CellValueType> _lstCellValueType;
+
+        public List<CellValueType> LstCellValueType
+        {
+            get { return _lstCellValueType; }
+            set { Set(ref _lstCellValueType, value); }
+        }
+
 
         public ExcelDataGridViewModel()
         {
             //Default Data
             List<ExcelGridRow> lstDefaultData = new List<ExcelGridRow>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 ExcelGridRow row = new ExcelGridRow(8);
                 lstDefaultData.Add(row);
             }
             LstData = new ExcelGridRowCollection(lstDefaultData);
+
+            //Cell Types
+            this.SelCellValueType = CellValueType.Double;
+            this.LstCellValueType = new List<CellValueType>(System.Enum.GetValues<CellValueType>());
         }
 
         #region 增删改

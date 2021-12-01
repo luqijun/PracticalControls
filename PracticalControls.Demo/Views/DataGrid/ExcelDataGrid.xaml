@@ -18,6 +18,15 @@
             <Button Content="导入数据" Width="80" Height="28" Margin="5,0" Padding="0" Command="{Binding ImportDataCommand}" Style="{DynamicResource MahApps.Styles.Button.MetroSquare.Accent}"/>
             <Button Content="导出数据" Width="80" Height="28" Margin="5,0" Padding="0" Command="{Binding ExportDataCommand}" Style="{DynamicResource MahApps.Styles.Button.MetroSquare.Accent}"/>
             <StackPanel Orientation="Horizontal" Margin="5,0">
+                <TextBlock Text="值类型:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="cbxValueType" Width="80" Height="26"
+                          ItemsSource="{Binding LstCellValueType}"
+                          SelectedItem="{Binding SelCellValueType}"
+                          mah:ControlsHelper.FocusBorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                          mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5,0">
                 <TextBlock Text="行数:" VerticalAlignment="Center"/>
                 <controls:NumericUpDownEx Height="24" Minimum="0" IsReadOnly="True"
                                           Value="{Binding RowsCount, ElementName=excelGrid,Mode=OneWay}"

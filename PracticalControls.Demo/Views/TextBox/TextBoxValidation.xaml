@@ -20,9 +20,9 @@
                                 NotifyOnValidationError=True }"
                  Style="{StaticResource MahApps.Styles.TextBox}"/>
         
-        <DataGrid RowValidationErrorTemplate="{x:Null}">
+        <!--<DataGrid RowValidationErrorTemplate="{x:Null}">
             <DataGrid.Columns>
             </DataGrid.Columns>
-        </DataGrid>
+        </DataGrid>-->
     </Grid>
 </UserControl>

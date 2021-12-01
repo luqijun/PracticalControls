@@ -25,6 +25,8 @@ namespace PracticalControls.Models
             }
         }
 
+        public CellValueType CellValueType { get; set; }
+
 
         #region 构造函数
 
@@ -55,6 +57,18 @@ namespace PracticalControls.Models
         public void AddRemoveColumns(int offset)
         {
             this.ExcelGrid.AddRemoveColumns(offset);
+        }
+
+        public void SetCellValueType(CellValueType valueType)
+        {
+            this.CellValueType = valueType;
+            foreach (var row in this)
+            {
+                foreach (var cell in row.Cells)
+                {
+                    cell.SetCellValueType(valueType);
+                }
+            }
         }
         #endregion
     }
