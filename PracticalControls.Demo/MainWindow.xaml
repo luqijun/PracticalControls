@@ -9,7 +9,10 @@
         Title="PracticalControls" Height="600" Width="1000">
     <Grid>
         <TabControl>
-            <TabItem Header="MultiRowText">
+            <TabItem Header="TextBox">
+                <views:TextBoxValidation/>
+            </TabItem>
+            <TabItem Header="TextBlock">
                 <views:MultiRowTextBlock/>
             </TabItem>
             <TabItem Header="DataGrid">
