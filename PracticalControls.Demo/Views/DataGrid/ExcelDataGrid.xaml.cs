@@ -83,7 +83,7 @@ namespace PracticalControls.Demo.Views
                 ExcelGridRow row = new ExcelGridRow(8);
                 lstDefaultData.Add(row);
             }
-            LstData = new ExcelGridRowCollection(lstDefaultData);
+            LstData = new ExcelGridRowCollection(lstDefaultData, this.SelCellValueType);
 
             //Cell Types
             this.SelCellValueType = CellValueType.Double;
@@ -223,7 +223,8 @@ namespace PracticalControls.Demo.Views
                     }
                     lstNewRows.Add(newRow);
                 }
-                this.LstData = new ExcelGridRowCollection(lstNewRows);
+
+                this.LstData = new ExcelGridRowCollection(lstNewRows, this.SelCellValueType);
             }
         }
 

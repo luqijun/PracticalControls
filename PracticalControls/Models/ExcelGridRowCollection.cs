@@ -25,13 +25,13 @@ namespace PracticalControls.Models
             }
         }
 
-        private CellValueType _cellType;
+        private CellValueType _cellValueType;
 
         public CellValueType CellValueType
         {
             get
             {
-                return _cellType;
+                return _cellValueType;
             }
         }
 
@@ -43,19 +43,20 @@ namespace PracticalControls.Models
 
         }
 
-        public ExcelGridRowCollection(ExcelDataGrid excelgrid) : this(null, excelgrid)
+        public ExcelGridRowCollection(ExcelDataGrid excelgrid, CellValueType valueType) : this(null, excelgrid, valueType)
         {
 
         }
 
-        public ExcelGridRowCollection(IEnumerable<ExcelGridRow> collection) : this(collection, null)
+        public ExcelGridRowCollection(IEnumerable<ExcelGridRow> collection, CellValueType valueType) : this(collection, null, valueType)
         {
 
         }
 
-        public ExcelGridRowCollection(IEnumerable<ExcelGridRow> collection, ExcelDataGrid excelgrid) : base(collection)
+        public ExcelGridRowCollection(IEnumerable<ExcelGridRow> collection, ExcelDataGrid excelgrid, CellValueType valueType = CellValueType.String) : base(collection)
         {
             this.ExcelGrid = excelgrid;
+            this._cellValueType = valueType;
         }
 
         #endregion
@@ -69,7 +70,7 @@ namespace PracticalControls.Models
 
         public void SetCellValueType(CellValueType valueType)
         {
-            _cellType = valueType;
+            _cellValueType = valueType;
             foreach (var row in this)
             {
                 foreach (var cell in row.Cells)
