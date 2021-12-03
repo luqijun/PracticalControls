@@ -177,7 +177,7 @@ namespace PracticalControls.Controls
                 {
                     collection.ExcelGrid = excelgrid;
                     collection.CollectionChanged += (sender, e) => excelgrid.OnPropertyChanged("RowsCount");
-                    excelgrid.BindDataGrid(collection);
+                    excelgrid.GenerateDataGrid(collection);
                 }
             }
         }
@@ -281,7 +281,7 @@ namespace PracticalControls.Controls
 
         public void InsertRow(int insertIndex, bool needRefresh = true)
         {
-            ExcelGridRow row = new ExcelGridRow(this.ColumnsCount);
+            ExcelGridRow row = new ExcelGridRow(this.ColumnsCount, this.ItemsSource.CellValueType);
             this.ItemsSource.Insert(insertIndex, row);
             if (needRefresh)
                 RefreshRowsHeader();
@@ -362,15 +362,36 @@ namespace PracticalControls.Controls
                 _datagrid.Columns[i].Header = CommonHelper.Instance.NumberToSystem26(i);
 
                 //重置binding
-                Binding binding = new Binding(GetColumnBindingPath(i));
-                binding.Mode = BindingMode.TwoWay;
+                Binding binding = GetColumnBinding(i);
                 (_datagrid.Columns[i] as DataGridTextColumn).Binding = binding;
             }
         }
 
-        private string GetColumnBindingPath(int colIndex)
+        private DataGridColumn GenerateDataGridColumn(int colIndex)
         {
-            return $"{ColumnBindingPrefix}[{colIndex}].Value";
+            DataGridTextColumn newCol = new DataGridTextColumn();
+            newCol.Binding = GetColumnBinding(colIndex);
+            newCol.Width = DefaulgColumnWidth;
+            newCol.Header = CommonHelper.Instance.NumberToSystem26(colIndex);
+            return newCol;
+        }
+
+        private Binding GetColumnBinding(int colIndex)
+        {
+            string path = $"{ColumnBindingPrefix}[{colIndex}].Value";
+            Binding binding = new Binding(path);
+            binding.Mode = BindingMode.TwoWay;
+            binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+
+            binding.ValidatesOnDataErrors = true;
+            binding.ValidatesOnExceptions = true;
+            binding.NotifyOnValidationError = true;
+            //binding.ValidatesOnNotifyDataErrors = true;
+
+            //binding.NotifyOnSourceUpdated = true;
+            //binding.NotifyOnTargetUpdated = true;
+
+            return binding;
         }
 
         #endregion
@@ -379,7 +400,7 @@ namespace PracticalControls.Controls
 
         #region Common Methods
 
-        public void BindDataGrid(ExcelGridRowCollection itemsSource)
+        public void GenerateDataGrid(ExcelGridRowCollection itemsSource)
         {
             new System.Threading.Thread(() =>
             {
@@ -392,28 +413,7 @@ namespace PracticalControls.Controls
                     int columns = itemsSource.Max(row => row.Cells.Count);
                     for (int i = 0; i < columns; i++)
                     {
-                        DataGridTextColumn newCol = new DataGridTextColumn();
-
-                        Binding binding = new Binding(GetColumnBindingPath(i));
-                        binding.Mode = BindingMode.TwoWay;
-                        binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-
-                        binding.ValidatesOnDataErrors = true;
-                        binding.ValidatesOnExceptions = true;
-                        binding.NotifyOnValidationError = true;
-                        binding.ValidatesOnNotifyDataErrors = true;
-
-                        binding.NotifyOnSourceUpdated = true;
-                        binding.NotifyOnTargetUpdated = true;
-                        foreach (var rule in binding.ValidationRules)
-                        {
-                            rule.ValidatesOnTargetUpdated = true;
-                        }
-
-                        newCol.Binding = binding;
-                        newCol.Width = DefaulgColumnWidth;
-
-                        newCol.Header = CommonHelper.Instance.NumberToSystem26(i);
+                        DataGridColumn newCol = GenerateDataGridColumn(i);
                         _datagrid.Columns.Add(newCol);
                     }
 
@@ -431,7 +431,7 @@ namespace PracticalControls.Controls
             if (itemsSource.Count < maxRowsCount)
             {
                 while (itemsSource.Count < maxRowsCount)
-                    itemsSource.Add(new ExcelGridRow(this.ColumnsCount));
+                    itemsSource.Add(new ExcelGridRow(this.ColumnsCount, this.ItemsSource.CellValueType));
             }
             else if (itemsSource.Count > maxRowsCount)
             {
@@ -446,7 +446,7 @@ namespace PracticalControls.Controls
                 if (data.Cells.Count < maxColsCount)
                 {
                     while (data.Cells.Count < maxColsCount)
-                        data.Cells.Add(new ExcelGridCell());
+                        data.Cells.Add(new ExcelGridCell(string.Empty, this.ItemsSource.CellValueType));
                 }
                 else if (data.Cells.Count > maxColsCount)
                 {

@@ -22,6 +22,7 @@
                 <ComboBox x:Name="cbxValueType" Width="80" Height="26"
                           ItemsSource="{Binding LstCellValueType}"
                           SelectedItem="{Binding SelCellValueType}"
+                          BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
                           mah:ControlsHelper.FocusBorderBrush="{DynamicResource MahApps.Brushes.Accent}"
                           mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                 </ComboBox>

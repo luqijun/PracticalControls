@@ -106,7 +106,7 @@ namespace PracticalControls.Demo.Views
                         this.LstData.RemoveAt(this.LstData.Count - 1);
                     break;
                 case "1":
-                    ExcelGridRow row = new ExcelGridRow(this.LstData.ExcelGrid.ColumnsCount);
+                    ExcelGridRow row = new ExcelGridRow(this.LstData.ExcelGrid.ColumnsCount, this.LstData.CellValueType);
                     this.LstData.Add(row);
                     break;
                 default:

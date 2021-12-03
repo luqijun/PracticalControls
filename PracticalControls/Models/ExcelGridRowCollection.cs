@@ -25,7 +25,15 @@ namespace PracticalControls.Models
             }
         }
 
-        public CellValueType CellValueType { get; set; }
+        private CellValueType _cellType;
+
+        public CellValueType CellValueType
+        {
+            get
+            {
+                return _cellType;
+            }
+        }
 
 
         #region 构造函数
@@ -61,7 +69,7 @@ namespace PracticalControls.Models
 
         public void SetCellValueType(CellValueType valueType)
         {
-            this.CellValueType = valueType;
+            _cellType = valueType;
             foreach (var row in this)
             {
                 foreach (var cell in row.Cells)
