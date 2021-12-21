@@ -9,6 +9,9 @@
         Title="PracticalControls" Height="600" Width="1000">
     <Grid>
         <TabControl>
+            <TabItem Header="Slider">
+                <views:ToolTipSlider/>
+            </TabItem>
             <TabItem Header="TextBox">
                 <views:TextBoxValidation/>
             </TabItem>
