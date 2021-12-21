@@ -60,6 +60,11 @@ namespace PracticalControls.Controls
             set { _addNewItemTip = value; }
         }
 
+        /// <summary>
+        /// 显示内容模板
+        /// </summary>
+        public DataTemplate ContentTemplate { get; set; }
+
         private RelayCommand<bool?> _refreshCollectionViewCommand;
         public RelayCommand<bool?> RefreshCollectionViewCommand =>
             _refreshCollectionViewCommand ?? (_refreshCollectionViewCommand = new RelayCommand<bool?>(ExecuteRefreshCollectionViewCommand));
@@ -95,9 +100,14 @@ namespace PracticalControls.Controls
 
             var element = base.GenerateElement(cell, dataItem) as ContentPresenter;
             element.ApplyTemplate();
+            
+            ContentPresenter content = (ContentPresenter)element.ContentTemplate.FindName("content", element);
+            if (this.ContentTemplate != null)
+                content.ContentTemplate = this.ContentTemplate;
+            content.ApplyTemplate();
 
             //绑定显示内容
-            TextBlock tbContent = (TextBlock)element.ContentTemplate.FindName("tbContent", element);
+            TextBlock tbContent = (TextBlock)content.ContentTemplate.FindName("tbContent", content);
             tbContent?.SetBinding(TextBlock.TextProperty, Binding);
 
             //绑定收缩展开事件

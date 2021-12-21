@@ -2,6 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:converters="clr-namespace:PracticalControls.Converters">
 
+    <DataTemplate x:Key="defaultContentTemplate">
+        <TextBlock x:Name="tbContent" Grid.Column="1" TextTrimming="CharacterEllipsis" 
+                   Style="{DynamicResource MahApps.Styles.TextBlock.DataGrid}"/>
+    </DataTemplate>
 
     <DataTemplate x:Key="dgTreeColumnTemplate">
         <Grid>
@@ -10,24 +14,29 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <FrameworkElement x:Name="balnkControl" Width="{Binding Level,Converter={x:Static converters:LevelToWidthConverter.Instance}}"/>
+            <FrameworkElement x:Name="blankControl" Width="{Binding Level,Converter={x:Static converters:LevelToWidthConverter.Instance}}"/>
             <ToggleButton x:Name="expander" Grid.Column="1" ClickMode="Press"
                           IsChecked="{Binding Path=IsExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                           Visibility="{Binding Children.Count,Converter={x:Static converters:ZeroToVisibilityConverter.InstanceWidthHidden}}"
                           Style="{DynamicResource MahApps.Styles.ToggleButton.TreeViewItem.ExpandCollapse}"/>
 
-            <TextBlock x:Name="tbContent" Grid.Column="2" TextTrimming="CharacterEllipsis" 
-                       Text="{Binding Text,RelativeSource={RelativeSource TemplatedParent}}" 
-                       Style="{DynamicResource MahApps.Styles.TextBlock.DataGrid}"/>
-            <TextBlock x:Name="tbNew" Grid.ColumnSpan="3" Visibility="Collapsed"
-                       Foreground="Tomato" FontStyle="Italic" TextDecorations="Underline" Margin="18,0,0,0"/>
+            <!--内容-->
+            <Grid x:Name="grid_content" Grid.Column="2">
+                <ContentPresenter x:Name="content" ContentTemplate="{StaticResource defaultContentTemplate}"/>
+            </Grid>
+
+            <!--新行-->
+            <Grid x:Name="grid_content_New" Grid.ColumnSpan="3" Visibility="Collapsed">
+                <TextBlock x:Name="tbNew" Grid.ColumnSpan="3"
+                           Foreground="Gray" FontStyle="Italic" TextDecorations="Underline" Margin="18,0,0,0"/>
+            </Grid>
         </Grid>
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding IsNewItem,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGridRow}}" Value="True">
-                <Setter TargetName="balnkControl" Property="Visibility" Value="Hidden"/>
+                <Setter TargetName="blankControl" Property="Visibility" Value="Hidden"/>
                 <Setter TargetName="expander" Property="Visibility" Value="Hidden"/>
-                <Setter TargetName="tbContent" Property="Visibility" Value="Collapsed"/>
-                <Setter TargetName="tbNew" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="grid_content" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="grid_content_New" Property="Visibility" Value="Visible"/>
             </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
