@@ -333,7 +333,7 @@ namespace PracticalControls.Common.Helpers
         /// <param name="lstNodes"></param>
         /// <param name="action"></param>
         /// <param name="containself"></param>
-        public static void SetNodes<T>(IEnumerable<T> lstNodes, Action<T> action, bool containself = true) where T : TreeViewItemBase<T>
+        public static void TraverseDescendants<T>(IEnumerable<T> lstNodes, Action<T> action, bool containself = true) where T : TreeViewItemBase<T>
         {
             foreach (var node in lstNodes)
             {
@@ -341,7 +341,7 @@ namespace PracticalControls.Common.Helpers
                 {
                     action(node);
                 }
-                SetNodes(node.Children, action);
+                TraverseDescendants(node.Children, action);
             }
         }
 
@@ -380,7 +380,7 @@ namespace PracticalControls.Common.Helpers
         /// </summary>
         /// <param name="lstNodes"></param>
         /// <param name="curNode"></param>
-        public static TreeViewItemBase<T> GetParentNode<T>(IEnumerable<T> lstNodes, TreeViewItemBase<T> curNode) where T : TreeViewItemBase<T>
+        public static TreeViewItemBase<T> TraverseAncestors<T>(IEnumerable<T> lstNodes, TreeViewItemBase<T> curNode) where T : TreeViewItemBase<T>
         {
             if (curNode.Parent != null)
                 return curNode.Parent;
@@ -504,7 +504,7 @@ namespace PracticalControls.Common.Helpers
                 var newSource = resetFunc.Invoke();
 
                 //展开节点
-                TreeViewHelper.SetNodes(newSource, node =>
+                TreeViewHelper.TraverseDescendants(newSource, node =>
                 {
                     if (lstExpandedNode.Any(n => n.Id == node.Id))
                         node.IsExpanded = true;
