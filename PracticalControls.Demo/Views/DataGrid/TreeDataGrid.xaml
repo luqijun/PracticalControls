@@ -6,16 +6,37 @@
              xmlns:pc="clr-namespace:PracticalControls.Controls;assembly=PracticalControls"
              xmlns:local="clr-namespace:PracticalControls.Demo.Views"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+
+        <DataTemplate x:Key="CbxIndeterminateTemplate">
+            <Rectangle Margin="2" UseLayoutRounding="False" Fill="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=Foreground}" />
+        </DataTemplate>
+
         <Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type GroupItem}">
-                        <Expander Header="{Binding Name}" IsExpanded="True">
-                            <ItemsPresenter />
-                        </Expander>
+                        <Grid>
+                            <Grid x:Name="normal" Visibility="Collapsed">
+                                <ItemsPresenter />
+                            </Grid>
+                            <Expander x:Name="expander" Header="{Binding Name}" IsExpanded="True" Margin="0,1">
+                                <ItemsPresenter />
+                            </Expander>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
+                                <Setter TargetName="expander" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="normal" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Name}" Value="">
+                                <Setter TargetName="expander" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="normal" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -54,7 +75,22 @@
                 </GroupStyle>
             </DataGrid.GroupStyle>-->
             <DataGrid.Columns>
-                <pc:DataGridTreeColumn Header="名称" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" CanEdit="False" AddNewItemTip="新增一行" Width="*" MinWidth="120"/>
+                <pc:DataGridTreeColumn Header="名称" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" CanEdit="False" AddNewItemTip="新增一行" Width="*" MinWidth="120">
+                    <pc:DataGridTreeColumn.ContentTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                          mah:CheckBoxHelper.CheckGlyphIndeterminateTemplate="{DynamicResource CbxIndeterminateTemplate}"/>
+                                <TextBlock x:Name="tbContent" Grid.Column="1" TextTrimming="CharacterEllipsis" 
+                                           Style="{DynamicResource MahApps.Styles.TextBlock.DataGrid}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </pc:DataGridTreeColumn.ContentTemplate>
+                </pc:DataGridTreeColumn>
                 <DataGridTextColumn Header="类型" Binding="{Binding Type}" Width="*" MinWidth="150"/>
                 <DataGridTextColumn Header="值" Binding="{Binding Value}" Width="*" MinWidth="150"/>
             </DataGrid.Columns>

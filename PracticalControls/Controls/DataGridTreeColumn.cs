@@ -100,15 +100,20 @@ namespace PracticalControls.Controls
 
             var element = base.GenerateElement(cell, dataItem) as ContentPresenter;
             element.ApplyTemplate();
-            
-            ContentPresenter content = (ContentPresenter)element.ContentTemplate.FindName("content", element);
-            if (this.ContentTemplate != null)
-                content.ContentTemplate = this.ContentTemplate;
-            content.ApplyTemplate();
 
-            //绑定显示内容
-            TextBlock tbContent = (TextBlock)content.ContentTemplate.FindName("tbContent", content);
-            tbContent?.SetBinding(TextBlock.TextProperty, Binding);
+            ContentPresenter content = (ContentPresenter)element.ContentTemplate.FindName("content", element);
+            if (content != null)
+            {
+                if (this.ContentTemplate != null)
+                    content.ContentTemplate = this.ContentTemplate;
+                content.ApplyTemplate();
+
+                //绑定显示内容
+                TextBlock tbContent = (TextBlock)content.ContentTemplate.FindName("tbContent", content);
+                BindingExpression bindingExpr = tbContent.GetBindingExpression(TextBlock.TextProperty);
+                if (bindingExpr == null)
+                    tbContent?.SetBinding(TextBlock.TextProperty, Binding);
+            }
 
             //绑定收缩展开事件
             ToggleButton toggleButton = (ToggleButton)element.ContentTemplate.FindName("expander", element);

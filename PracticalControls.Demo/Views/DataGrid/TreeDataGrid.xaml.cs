@@ -64,25 +64,26 @@ namespace PracticalControls.Demo.Views
 
             for (int i = 0; i < 3; i++)
             {
-                lstResult.Add(new DataGridItem("Grade" + i, "Type1", "v1", 0, true) { GroupName = "Group" + i, IsExpanded = true });
+                lstResult.Add(new DataGridItem("Grade" + i, "Type1", "v1", 0, true) { LstGroupName = new List<string>() { "Group" + i }, IsExpanded = true });
                 for (int j = 0; j < 4; j++)
                 {
-                    lstResult.Add(new DataGridItem("Grade" + j, "Type1", "v1", 1, true) { GroupName = "Group" + i });
+                    lstResult.Add(new DataGridItem("Grade" + j, "Type1", "v1", 1, true) { LstGroupName = new List<string>() { "Group" + i } });
                     for (int k = 0; k < 1000; k++)
                     {
-                        lstResult.Add(new DataGridItem("Grade" + k, "Type1", "v1", 2, false) { GroupName = "Group" + i });
+                        lstResult.Add(new DataGridItem("Grade" + k, "Type1", "v1", 2, false) { LstGroupName = new List<string>() { "Group" + i } });
                     }
                 }
             }
 
             this.LstDataGridItem = new ObservableCollection<DataGridItem>(lstResult);
             TreeDataGridHelper.ResetRelationShip(this.LstDataGridItem);
+            lstResult.Where(o => o.Level == 0).ToList().ForEach(o => o.IsChecked = true);
 
             this.LstDataGridItemView = CollectionViewSource.GetDefaultView(this.LstDataGridItem);
             this.LstDataGridItemView.Filter = o => (o as TreeDataGridItemBase).IsVisible;
 
             //分组
-            this.LstDataGridItemView.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
+            this.LstDataGridItemView.GroupDescriptions.Add(new PropertyGroupDescription("LstGroupName[0]"));
         }
 
         #region Event
