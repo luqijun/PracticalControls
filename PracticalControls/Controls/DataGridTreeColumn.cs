@@ -110,9 +110,12 @@ namespace PracticalControls.Controls
 
                 //绑定显示内容
                 TextBlock tbContent = (TextBlock)content.ContentTemplate.FindName("tbContent", content);
-                BindingExpression bindingExpr = tbContent.GetBindingExpression(TextBlock.TextProperty);
-                if (bindingExpr == null)
-                    tbContent?.SetBinding(TextBlock.TextProperty, Binding);
+                if (tbContent != null)
+                {
+                    BindingExpression bindingExpr = tbContent.GetBindingExpression(TextBlock.TextProperty);
+                    if (bindingExpr == null)
+                        tbContent.SetBinding(TextBlock.TextProperty, Binding);
+                }
             }
 
             //绑定收缩展开事件

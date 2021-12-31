@@ -85,7 +85,9 @@
                                 </Grid.ColumnDefinitions>
                                 <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                           mah:CheckBoxHelper.CheckGlyphIndeterminateTemplate="{DynamicResource CbxIndeterminateTemplate}"/>
-                                <TextBlock x:Name="tbContent" Grid.Column="1" TextTrimming="CharacterEllipsis" 
+                                <TextBlock x:Name="tbContent" Grid.Column="1" 
+                                           Text="{Binding Name, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
+                                           TextTrimming="CharacterEllipsis" 
                                            Style="{DynamicResource MahApps.Styles.TextBlock.DataGrid}"/>
                             </Grid>
                         </DataTemplate>
