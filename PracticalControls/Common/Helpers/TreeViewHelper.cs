@@ -94,7 +94,7 @@ namespace PracticalControls.Common.Helpers
             if (tv == null)
                 return;
 
-            tv.PreviewMouseDown += Tv_PreviewMouseDown;
+            tv.PreviewMouseLeftButtonDown += Tv_PreviewMouseLeftButtonDown;
             tv.PreviewMouseLeftButtonUp += Tv_PreviewMouseLeftButtonUp;
             tv.MouseMove += Tv_MouseMove;
 
@@ -130,7 +130,7 @@ namespace PracticalControls.Common.Helpers
 
         static object _draggingObject;
 
-        private static void Tv_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private static void Tv_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             TreeView tv = sender as TreeView;
             var tvItem = UIHelper.FindAncestor<TreeViewItem>(e.OriginalSource as FrameworkElement);
@@ -160,6 +160,10 @@ namespace PracticalControls.Common.Helpers
         {
             var viewElement = sender as FrameworkElement;
             if (_treeViewItems.Count == 0 || e.LeftButton != System.Windows.Input.MouseButtonState.Pressed)
+                return;
+
+            Point currentPos = NativeMethods.GetCursorPos();
+            if (Math.Abs(currentPos.X - _dragStartPosition.Value.X) < 2 || Math.Abs(currentPos.Y - _dragStartPosition.Value.Y) < 2)
                 return;
 
             //拖拽中
@@ -272,7 +276,7 @@ namespace PracticalControls.Common.Helpers
 
         public static readonly DependencyProperty DragDropItemActionProperty =
             DependencyProperty.RegisterAttached("DragDropItemAction", typeof(TreeViewItemDragDropAction), typeof(TreeViewHelper), new PropertyMetadata(null));
-        
+
         #endregion
 
         #region 静态方法
