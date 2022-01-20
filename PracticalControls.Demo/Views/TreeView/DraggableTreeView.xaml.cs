@@ -81,7 +81,7 @@ namespace PracticalControls.Demo.Views
             this.LstTreeItem = new ObservableCollection<DragableTreeItem>();
 
             DragableTreeItem ti = new DragableTreeItem();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 3000; i++)
             {
                 DragableTreeItem ti0 = new DragableTreeItem() { Name = "item1" + i, CanDrop = false };
                 this.LstTreeItem.Add(ti0);

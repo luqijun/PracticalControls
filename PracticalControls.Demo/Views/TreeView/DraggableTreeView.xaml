@@ -23,6 +23,9 @@
     </UserControl.Resources>
     <Grid>
         <TreeView x:Name="treeView"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.IsContainerVirtualizable="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
                   ItemsSource="{Binding LstTreeItem}"
                   ItemTemplate="{DynamicResource tvItemTemplate}" 
                   ItemContainerStyle="{DynamicResource PracticalControls.Styles.DragDropTreeViewItemStyle}"
