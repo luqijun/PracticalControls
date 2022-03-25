@@ -5,10 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PracticalControls.Demo"
         xmlns:views="clr-namespace:PracticalControls.Demo.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviours="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:helpers="clr-namespace:PracticalControls.Common.Helpers;assembly=PracticalControls"
+        xmlns:controls="clr-namespace:PracticalControls.Controls;assembly=PracticalControls"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         Title="PracticalControls" Height="600" Width="1000">
+    <Window.Resources>
+
+    </Window.Resources>
     <Grid>
         <TabControl>
+            <TabItem Header="TabControl">
+                <views:DragTabControlDemo />
+            </TabItem>
             <TabItem Header="Slider">
                 <views:ToolTipSlider/>
             </TabItem>

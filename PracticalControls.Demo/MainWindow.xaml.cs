@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +26,8 @@ namespace PracticalControls.Demo
         {
             InitializeComponent();
 
+            this.DataContext = new MainWindowViewModel();
+
             IList<B> lstB = new List<B>();
             var lstA = lstB as System.Collections.IList;
         }
@@ -37,5 +41,30 @@ namespace PracticalControls.Demo
         {
 
         }
+    }
+
+    public class MainWindowViewModel : ViewModelBase
+    {
+        private ObservableCollection<object> _lstObject;
+
+        public ObservableCollection<object> LstObject
+        {
+            get { return _lstObject; }
+            set { Set(ref _lstObject, value); }
+        }
+
+        public MainWindowViewModel()
+        {
+            _lstObject = new ObservableCollection<object>();
+            for (int i = 0; i < 5; i++)
+            {
+                _lstObject.Add(new Data() { Name = $"Name{i}" });
+            }
+        }
+    }
+
+    public class Data
+    {
+        public string Name { get; set; }
     }
 }
