@@ -10,8 +10,8 @@ namespace PracticalControls.Common
     {
         public static System.Windows.Point GetCursorPos()
         {
-            WinApi.User32.User32Methods.GetCursorPos(out NetCoreEx.Geometry.Point p);
-            return new System.Windows.Point(p.X, p.Y);
+            Win32.User32.GetCursorPos(out Win32.POINT p);
+            return new System.Windows.Point(p.x, p.y);
         }
     }
 }

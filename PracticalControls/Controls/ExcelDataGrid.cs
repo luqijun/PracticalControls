@@ -98,7 +98,7 @@ namespace PracticalControls.Controls
                 dataText = dataText.Substring(0, dataText.LastIndexOf("\r\n"));
             string[] dataSplits = dataText.Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-            int maxCopyColumn = dataSplits.Max(o => o.Split("\t").Length);
+            int maxCopyColumn = dataSplits.Max(o => o.Split('\t').Length);
 
             int oldColumnsCount = excelGrid.ColumnsCount;
             IList<ExcelGridRow> lstData = (excelGrid.ItemsSource as IList<ExcelGridRow>);
@@ -117,7 +117,7 @@ namespace PracticalControls.Controls
             for (int i = 0; i < dataSplits.Length; i++)
             {
                 int row = startRow + i;
-                string[] columnsData = dataSplits[i].Split("\t");
+                string[] columnsData = dataSplits[i].Split('\t');
                 for (int j = 0; j < columnsData.Length; j++)
                 {
                     int col = startCol + j;

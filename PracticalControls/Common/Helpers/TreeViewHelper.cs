@@ -269,7 +269,7 @@ namespace PracticalControls.Common.Helpers
             return (TreeViewItemDragDropAction)obj.GetValue(DragDropItemActionProperty);
         }
 
-        public static void SetDragDropItemAction(DependencyObject obj, Action<object, object, object> value)
+        public static void SetDragDropItemAction(DependencyObject obj, TreeViewItemDragDropAction value)
         {
             obj.SetValue(DragDropItemActionProperty, value);
         }

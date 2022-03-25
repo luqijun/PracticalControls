@@ -21,7 +21,7 @@ namespace PracticalControls.Common.Helpers
             => (bool)element.GetValue(AutoHideProperty);
 
         public static readonly DependencyProperty OrientationProperty = DependencyProperty.RegisterAttached(
-            "Orientation", typeof(Orientation), typeof(ScrollViewerAttach), new FrameworkPropertyMetadata(ValueBoxes.VerticalBox, FrameworkPropertyMetadataOptions.Inherits, OnOrientationChanged));
+            "Orientation", typeof(Orientation), typeof(ScrollViewerAttach), new FrameworkPropertyMetadata((Orientation)ValueBoxes.VerticalBox, FrameworkPropertyMetadataOptions.Inherits, OnOrientationChanged));
 
         private static void OnOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

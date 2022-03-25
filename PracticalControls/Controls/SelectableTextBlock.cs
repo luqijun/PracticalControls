@@ -20,7 +20,7 @@ namespace PracticalControls.Controls
             TextEditorWrapper.RegisterCommandHandlers(typeof(SelectableTextBlock), true, true, true);
 
             // remove the focus rectangle around the control
-            FocusVisualStyleProperty.OverrideMetadata(typeof(SelectableTextBlock), new FrameworkPropertyMetadata((object)null));
+            FocusVisualStyleProperty.OverrideMetadata(typeof(SelectableTextBlock), new FrameworkPropertyMetadata(null));
         }
 
         public SelectableTextBlock()

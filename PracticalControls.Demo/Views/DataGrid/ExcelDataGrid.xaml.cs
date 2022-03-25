@@ -87,7 +87,7 @@ namespace PracticalControls.Demo.Views
 
             //Cell Types
             this.SelCellValueType = CellValueType.Double;
-            this.LstCellValueType = new List<CellValueType>(System.Enum.GetValues<CellValueType>());
+            this.LstCellValueType = new List<CellValueType>(System.Enum.GetValues(typeof(CellValueType)).OfType<CellValueType>());
         }
 
         #region 增删改

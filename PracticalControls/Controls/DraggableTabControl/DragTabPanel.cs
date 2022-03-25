@@ -31,7 +31,7 @@ namespace PracticalControls.Controls
         internal Dictionary<int, double> ItemWidthDic = new Dictionary<int, double>();
 
         public static readonly DependencyPropertyKey FluidMoveDurationPropertyKey =
-            DependencyProperty.RegisterReadOnly("FluidMoveDuration", typeof(Duration), typeof(DragTabPanel),
+            DependencyProperty.RegisterReadOnly(nameof(FluidMoveDuration), typeof(Duration), typeof(DragTabPanel),
                 new PropertyMetadata(new Duration(TimeSpan.FromMilliseconds(0))));
 
         public static readonly DependencyProperty FluidMoveDurationProperty =
@@ -43,7 +43,7 @@ namespace PracticalControls.Controls
         public Duration FluidMoveDuration
         {
             get => (Duration)GetValue(FluidMoveDurationProperty);
-            set => SetValue(FluidMoveDurationProperty, value);
+            set => SetValue(FluidMoveDurationPropertyKey, value);
         }
 
         public static readonly DependencyProperty IsTabFillEnabledProperty = DependencyProperty.Register(
@@ -68,7 +68,7 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty IsAutoTabWidthProperty =
-            DependencyProperty.Register("IsAutoTabWidth", typeof(bool), typeof(DragTabPanel), new PropertyMetadata(ValueBoxes.TrueBox));
+            DependencyProperty.Register(nameof(IsAutoTabWidth), typeof(bool), typeof(DragTabPanel), new PropertyMetadata(ValueBoxes.TrueBox));
 
         /// <summary>
         ///     标签宽度
@@ -89,7 +89,7 @@ namespace PracticalControls.Controls
         ///     标签高度
         /// </summary>
         public static readonly DependencyProperty TabItemHeightProperty = DependencyProperty.Register(
-            "TabItemHeight", typeof(double), typeof(DragTabPanel), new PropertyMetadata(30.0));
+            nameof(TabItemHeight), typeof(double), typeof(DragTabPanel), new PropertyMetadata(30.0));
 
         /// <summary>
         ///     标签高度

@@ -1,11 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31515.178
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticalControls.Demo", "PracticalControls.Demo\PracticalControls.Demo.csproj", "{72357B9D-7FF6-4BC9-990E-4D1CFF7313EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PracticalControls.Demo", "PracticalControls.Demo\PracticalControls.Demo.csproj", "{72357B9D-7FF6-4BC9-990E-4D1CFF7313EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticalControls", "PracticalControls\PracticalControls.csproj", "{8A293BB4-D42A-43C4-A24A-7B38F1162565}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PracticalControls", "PracticalControls\PracticalControls.csproj", "{8A293BB4-D42A-43C4-A24A-7B38F1162565}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{4D8C3D6C-3B17-4722-BFEB-5AC522E9C461}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfLibrary1", "WpfLibrary1\WpfLibrary1.csproj", "{3F67A24F-84FA-4111-AFB5-2A3404758F95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp_Net452", "WpfApp_Net452\WpfApp_Net452.csproj", "{012902FB-BCE2-4FAA-8EC1-57AAB0A47F23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{8A293BB4-D42A-43C4-A24A-7B38F1162565}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A293BB4-D42A-43C4-A24A-7B38F1162565}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A293BB4-D42A-43C4-A24A-7B38F1162565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D8C3D6C-3B17-4722-BFEB-5AC522E9C461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D8C3D6C-3B17-4722-BFEB-5AC522E9C461}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D8C3D6C-3B17-4722-BFEB-5AC522E9C461}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D8C3D6C-3B17-4722-BFEB-5AC522E9C461}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F67A24F-84FA-4111-AFB5-2A3404758F95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F67A24F-84FA-4111-AFB5-2A3404758F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F67A24F-84FA-4111-AFB5-2A3404758F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F67A24F-84FA-4111-AFB5-2A3404758F95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{012902FB-BCE2-4FAA-8EC1-57AAB0A47F23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{012902FB-BCE2-4FAA-8EC1-57AAB0A47F23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{012902FB-BCE2-4FAA-8EC1-57AAB0A47F23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{012902FB-BCE2-4FAA-8EC1-57AAB0A47F23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
