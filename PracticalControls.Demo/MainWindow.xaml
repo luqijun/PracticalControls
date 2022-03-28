@@ -37,6 +37,9 @@
                     <TabItem Header="TreeDataGrid">
                         <views:TreeDataGrid/>
                     </TabItem>
+                    <TabItem Header="TreeDataGrid">
+                        <views:AddRows/>
+                    </TabItem>
                 </TabControl>
             </TabItem>
             <TabItem Header="TreeView">
