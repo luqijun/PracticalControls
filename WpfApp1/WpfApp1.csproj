@@ -5,6 +5,7 @@
     <OutputType>WinExe</OutputType>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,4 +13,11 @@
     <ProjectReference Include="..\WpfLibrary1\WpfLibrary1.csproj" />
   </ItemGroup>
 
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="echo Before Build: $(OutDir)" />
+	</Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="echo After Build: $(OutDir)$(TargetFileName)" />
+	</Target>
 </Project>

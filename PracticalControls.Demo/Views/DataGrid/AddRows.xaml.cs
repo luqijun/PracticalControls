@@ -3,6 +3,8 @@ using PracticalControls.Demo.Models;
 using PracticalControls.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -35,30 +37,50 @@ namespace PracticalControls.Demo.Views
     public class AddRowsViewModel : ViewModelBase
     {
 
+        //public ICollectionView LstDataView { get; set; }
 
-        private RangeObservableCollection<DataGridItem> _lstData;
+        private ObservableCollection<DataGridItem> _lstData;
 
-        public RangeObservableCollection<DataGridItem> LstData
+        public ObservableCollection<DataGridItem> LstData
         {
             get { return _lstData; }
             set { Set(ref _lstData, value); }
         }
 
+        static int index = 0;
+
+
         public AddRowsViewModel()
         {
-            this.LstData = new RangeObservableCollection<DataGridItem>();
+            this.LstData = new ObservableCollection<DataGridItem>();
+
+            //this.LstDataView = CollectionViewSource.GetDefaultView(this.LstData);
             Task.Run(() =>
             {
                 while (true)
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
 
-                    //List<DataGridItem> lst = new List<DataGridItem>();
-                    //for (int i = 0; i < 5000; i++)
-                    //{
-                    //    lst.Add(new DataGridItem() { Name = "Name" + i });
-                    //}
-                    //this.LstData.AddRange(lst);
+                    System.Diagnostics.Debug.WriteLine(LstData.Count);
+
+                    List<DataGridItem> lst = new List<DataGridItem>();
+                    for (int i = 0; i < 5000; i++)
+                    {
+                        index++;
+                        var item = new DataGridItem() { Name = "Name" + index, Type = "Type" + index };
+                        lst.Add(item);
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            this.LstData.Add(item);
+                        });
+                    }
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        //lst.ForEach(o=> this.LstData.Add(o));
+                        //(this.LstData as RangeObservableCollection<DataGridItem>).AddRange(lst);
+                    });
                 }
             });
 
