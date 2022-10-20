@@ -54,6 +54,8 @@ namespace PracticalControls.Demo.Views
         {
             this.LstData = new ObservableCollection<DataGridItem>();
 
+#if false
+
             //this.LstDataView = CollectionViewSource.GetDefaultView(this.LstData);
             Task.Run(() =>
             {
@@ -83,6 +85,8 @@ namespace PracticalControls.Demo.Views
                     });
                 }
             });
+
+#endif
 
         }
     }

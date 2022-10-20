@@ -17,6 +17,12 @@
     </Window.Resources>
     <Grid>
         <TabControl>
+            <TabItem Header="Thumb">
+                <views:DragCanvas />
+            </TabItem>
+            <TabItem Header="Grid">
+                <views:BorderGrid />
+            </TabItem>
             <TabItem Header="TabControl">
                 <views:DragTabControlDemo />
             </TabItem>
