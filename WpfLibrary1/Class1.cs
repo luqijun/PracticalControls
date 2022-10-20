@@ -8,6 +8,9 @@ namespace WpfLibrary1
         {
             //≤‚ ‘
             //Win32.User32.GetCursorPos(out Win32.POINT p);
+
+            int a = 1;
+            int b = 2;
         }
     }
 }
