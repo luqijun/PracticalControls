@@ -17,6 +17,9 @@
     </Window.Resources>
     <Grid>
         <TabControl>
+            <TabItem Header="Polyline">
+                <views:EditablePolyline />
+            </TabItem>
             <TabItem Header="Thumb">
                 <views:DragCanvas />
             </TabItem>
