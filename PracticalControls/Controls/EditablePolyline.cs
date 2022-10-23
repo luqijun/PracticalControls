@@ -16,11 +16,16 @@ namespace PracticalControls.Controls
     /// <summary>
     /// Editable Polyline 
     /// </summary>
+    [StyleTypedProperty(Property = "ThumbStyle", StyleTargetType = typeof(Thumb))]
     public class EditablePolyline : Shape
     {
-
-
         #region Constructors
+
+        static EditablePolyline()
+        {
+            // For auto find template in Generic.xaml
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(EditablePolyline), new FrameworkPropertyMetadata(typeof(EditablePolyline)));
+        }
 
         /// <summary>
         /// Instantiates a new instance of a Polyline.
@@ -30,6 +35,18 @@ namespace PracticalControls.Controls
             this.IsHitTestVisible = true;
 
             this.Unloaded += EditablePolyline_Unloaded;
+            this.MouseEnter += EditablePolyline_MouseEnter;
+            this.MouseLeave += EditablePolyline_MouseLeave;
+        }
+
+        private void EditablePolyline_MouseEnter(object sender, MouseEventArgs e)
+        {
+            this.StrokeThickness += 1;
+        }
+
+        private void EditablePolyline_MouseLeave(object sender, MouseEventArgs e)
+        {
+            this.StrokeThickness -= 1;
         }
 
         private void EditablePolyline_Unloaded(object sender, RoutedEventArgs e)
@@ -46,7 +63,6 @@ namespace PracticalControls.Controls
         }
 
         #endregion Constructors
-
 
         #region Private Methods and Members
 
@@ -67,7 +83,7 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty ThumbStyleProperty =
-            DependencyProperty.Register("ThumbStyle", typeof(Style), typeof(EditablePolyline), new PropertyMetadata(default));
+                DependencyProperty.Register("ThumbStyle", typeof(Style), typeof(Thumb), new PropertyMetadata(default));
 
 
         /// <summary>
@@ -86,6 +102,36 @@ namespace PracticalControls.Controls
 
         #endregion
 
+        #region Custom Events
+
+        public static readonly RoutedEvent DragThumbCompletedEvent = EventManager.RegisterRoutedEvent(
+            name: "DragThumbCompleted",
+            routingStrategy: RoutingStrategy.Bubble,
+            handlerType: typeof(RoutedEventHandler),
+            ownerType: typeof(EditablePolyline));
+
+        /// <summary>
+        /// Drag thumb completed
+        /// </summary>
+        public event RoutedEventHandler DragThumbCompleted
+        {
+            add { AddHandler(DragThumbCompletedEvent, value); }
+            remove { RemoveHandler(DragThumbCompletedEvent, value); }
+        }
+
+        private void RaiseDragThumbCompletedEvent(object sender)
+        {
+            // Create a RoutedEventArgs instance.
+            PloylineDragEventArgs routedEventArgs = new(routedEvent: DragThumbCompletedEvent);
+            routedEventArgs.Source = sender;
+            routedEventArgs.PointIndex = _draggingPointIndex;
+            routedEventArgs.Point = this.Points[_draggingPointIndex];
+
+            // Raise the event, which will bubble up through the element tree.
+            RaiseEvent(routedEventArgs);
+        }
+
+        #endregion
 
         #region Override Visuals
 
@@ -186,24 +232,6 @@ namespace PracticalControls.Controls
             //Geometry
             CacheDefiningGeometry();
 
-            ////Add Circle Thumbs
-            //for (int i = 0; i < pointCollection.Count; i++)
-            //{
-            //    Thumb thumb = new Thumb();
-            //    thumb.Focusable = false;
-            //    thumb.Tag = i;
-            //    thumb.DragStarted += Thumb_DragStarted;
-            //    thumb.DragDelta += Thumb_DragDelta;
-            //    thumb.DragCompleted += Thumb_DragCompleted;
-            //    thumb.Style = this.ThumbStyle;
-
-            //    //Ellipse ellipse = new Ellipse() { Stroke = new SolidColorBrush(Colors.Red), Fill = new SolidColorBrush(Colors.White), StrokeThickness = 1 };
-            //    Rect rect = new Rect(pointCollection[i].X - 5, pointCollection[i].Y - 5, 10, 10);
-            //    thumb.Arrange(rect);
-            //    _visuals.Add(thumb);
-            //    AddVisualChild(thumb);
-            //}
-
             return base.MeasureOverride(constraint);
         }
 
@@ -295,7 +323,7 @@ namespace PracticalControls.Controls
                 thumb.DragDelta += Thumb_DragDelta;
                 thumb.DragCompleted += Thumb_DragCompleted;
                 thumb.Style = this.ThumbStyle;
-                thumb.Measure(finalSize);//Measure this desiredSize of Thumb
+                thumb.Measure(finalSize);//Measure the desiredSize of Thumb
 
                 //Ellipse ellipse = new Ellipse() { Stroke = new SolidColorBrush(Colors.Red), Fill = new SolidColorBrush(Colors.White), StrokeThickness = 1 };
                 Point topLeftPoint = new Point(pointCollection[i].X - thumb.DesiredSize.Width / 2, pointCollection[i].Y - thumb.DesiredSize.Height / 2);
@@ -312,24 +340,26 @@ namespace PracticalControls.Controls
 
         #region Thumb Events
 
+        int _draggingPointIndex = -1;
         bool _isDragging = false;
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
         {
             _isDragging = true;
+            _draggingPointIndex = (int)((sender as Thumb).Tag);
         }
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Thumb thumb = sender as Thumb;
 
-            //Change Point Value
+            //Change point value
             int index = (int)((sender as Thumb).Tag);
             Point point = Points[index];
             Point newPoint = new Point(point.X + e.HorizontalChange, point.Y + e.VerticalChange);
             this.Points[index] = newPoint;
 
-            //Move thumb
+            //Rearrange the dragging thumb
             Point topLeftPoint = new Point(newPoint.X - thumb.DesiredSize.Width / 2, newPoint.Y - thumb.DesiredSize.Height / 2);
             Rect rect = new Rect(topLeftPoint, thumb.DesiredSize);
             thumb.Arrange(rect);
@@ -341,11 +371,56 @@ namespace PracticalControls.Controls
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             _isDragging = false;
+            RaiseDragThumbCompletedEvent(sender);
         }
 
         #endregion
 
         #endregion Internal methods
 
+        #region Public methods
+
+        /// <summary>
+        /// Move the whole polyline
+        /// </summary>
+        /// <param name="offsetX"></param>
+        /// <param name="offsetY"></param>
+        public void Move(double offsetX, double offsetY)
+        {
+            PointCollection newPoints = new PointCollection();
+            for (int i = 0; i < this.Points.Count; i++)
+            {
+                Point point = this.Points[i];
+                point.X += offsetX;
+                point.Y += offsetY;
+                newPoints.Add(point);
+            }
+            this.Points = newPoints;
+        }
+
+        #endregion
+    }
+
+
+    public class PloylineDragEventArgs : RoutedEventArgs
+    {
+        public int PointIndex { get; set; }
+
+        public Point Point { get; set; }
+
+        public PloylineDragEventArgs()
+        {
+
+        }
+
+        public PloylineDragEventArgs(RoutedEvent routedEvent) : base(routedEvent)
+        {
+
+        }
+
+        public PloylineDragEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source)
+        {
+
+        }
     }
 }

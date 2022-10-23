@@ -422,7 +422,8 @@ namespace PracticalControls.Controls
                     OnPropertyChanged("RowsCount");
                     OnPropertyChanged("ColumnsCount");
                 }));
-            }).Start();
+            })
+            { IsBackground = true }.Start();
         }
 
         public void AlignRowsColsCount(IList<ExcelGridRow> itemsSource, int maxRowsCount, int maxColsCount)
