@@ -7,11 +7,23 @@
              xmlns:controls="clr-namespace:PracticalControls.Controls;assembly=PracticalControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="PolylineMouseOver" TargetType="controls:EditablePolyline">
+            <Setter Property="StrokeThickness" Value="1" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="StrokeThickness" Value="2" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <TextBlock Text="Draggable Polyline：" />
-        <controls:EditablePolyline StrokeThickness="1" Stroke="Red" 
+        <controls:EditablePolyline x:Name="polyline" Stroke="Red" 
                                    ShowThumb="True"
                                    ThumbStyle="{StaticResource PracticalControls.Styles.Thumb.Circle}"
-                                   Points="15,100 85,40 130,100 295,50" />
+                                   Points="15,100 85,40 130,100 295,50"
+                                   Style="{StaticResource PolylineMouseOver}">
+        </controls:EditablePolyline>
     </Grid>
 </UserControl>

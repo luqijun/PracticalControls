@@ -35,18 +35,6 @@ namespace PracticalControls.Controls
             this.IsHitTestVisible = true;
 
             this.Unloaded += EditablePolyline_Unloaded;
-            this.MouseEnter += EditablePolyline_MouseEnter;
-            this.MouseLeave += EditablePolyline_MouseLeave;
-        }
-
-        private void EditablePolyline_MouseEnter(object sender, MouseEventArgs e)
-        {
-            this.StrokeThickness += 1;
-        }
-
-        private void EditablePolyline_MouseLeave(object sender, MouseEventArgs e)
-        {
-            this.StrokeThickness -= 1;
         }
 
         private void EditablePolyline_Unloaded(object sender, RoutedEventArgs e)
