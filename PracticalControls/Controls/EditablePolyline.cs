@@ -71,7 +71,7 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty ThumbStyleProperty =
-                DependencyProperty.Register("ThumbStyle", typeof(Style), typeof(Thumb), new PropertyMetadata(default));
+                DependencyProperty.Register("ThumbStyle", typeof(Style), typeof(EditablePolyline), new PropertyMetadata(default));
 
 
         /// <summary>

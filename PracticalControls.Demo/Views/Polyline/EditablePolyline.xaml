@@ -22,7 +22,7 @@
         <controls:EditablePolyline x:Name="polyline" Stroke="Red" 
                                    ShowThumb="True"
                                    ThumbStyle="{StaticResource PracticalControls.Styles.Thumb.Circle}"
-                                   Points="15,100 85,40 130,100 295,50"
+                                   Points="15,100 85,40 130,100 295,50 395,80"
                                    Style="{StaticResource PolylineMouseOver}">
         </controls:EditablePolyline>
     </Grid>
