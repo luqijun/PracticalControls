@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Markup;
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located
@@ -8,3 +9,9 @@ using System.Windows;
                                               //(used if a resource is not found in the page,
                                               // app, or any theme specific resource dictionaries)
 )]
+
+[assembly: XmlnsDefinition("https://lqjun.com/Dirkster99/AvalonDock", "PracticalControls")]
+[assembly: XmlnsDefinition("https://lqjun.com/Dirkster99/AvalonDock", "PracticalControls.Controls")]
+
+[assembly: XmlnsPrefix("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "PracticalControls")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "PracticalControls.Controls")]

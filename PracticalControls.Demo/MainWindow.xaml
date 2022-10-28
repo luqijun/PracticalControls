@@ -18,7 +18,14 @@
     <Grid>
         <TabControl>
             <TabItem Header="Drawing">
-                <views:SplintRing />
+                <Grid>
+                    <Grid.RowDefinitions >
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <views:SplintRing />
+                    <views:CrossHair Grid.Row="1"  />
+                </Grid>
             </TabItem>
             <TabItem Header="Polyline">
                 <views:EditablePolyline />
