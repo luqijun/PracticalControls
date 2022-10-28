@@ -90,7 +90,6 @@ namespace PracticalControls.Controls
         private void AddCrossHair()
         {
 
-
             _horizontalLine = new Line() { Stroke = this.HorizontalLineStroke };
             _verticalLine = new Line() { Stroke = this.VerticalLineStroke };
             _circle = new Ellipse() { Stroke = this.CircleStroke, Width = CircleRadius, Height = CircleRadius };
@@ -101,6 +100,9 @@ namespace PracticalControls.Controls
             this.Children.Add(_verticalLine);
             this.Children.Add(_circle);
             this.Children.Add(_text);
+
+            _currentMousePoint = new Point(this.ActualWidth / 2, this.ActualHeight / 2);
+            UpdateCursorCrosshair();
         }
 
         private void UpdateCursorCrosshair()
