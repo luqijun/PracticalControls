@@ -29,10 +29,10 @@ namespace PracticalControls.Controls
 
         public CrossHair()
         {
-            this.Loaded += CrossHair_Loaded;
+
         }
 
-        private void CrossHair_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        protected override void OnInitialized(EventArgs e)
         {
             AddCrossHair();
         }
@@ -84,22 +84,49 @@ namespace PracticalControls.Controls
 
 
 
+
+        public bool ShowCoordinates
+        {
+            get { return (bool)GetValue(ShowCoordinatesProperty); }
+            set { SetValue(ShowCoordinatesProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowCoordinatesProperty =
+            DependencyProperty.Register("ShowCoordinates", typeof(bool), typeof(CrossHair), new PropertyMetadata(true));
+
+
+        public bool ShowCircle
+        {
+            get { return (bool)GetValue(ShowCircleProperty); }
+            set { SetValue(ShowCircleProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowCircleProperty =
+            DependencyProperty.Register("ShowCircle", typeof(bool), typeof(CrossHair), new PropertyMetadata(true));
+
+
         #endregion
 
 
         private void AddCrossHair()
         {
 
-            _horizontalLine = new Line() { Stroke = this.HorizontalLineStroke };
-            _verticalLine = new Line() { Stroke = this.VerticalLineStroke };
-            _circle = new Ellipse() { Stroke = this.CircleStroke, Width = CircleRadius, Height = CircleRadius };
-
-            _text = new TextBlock() { Foreground = Brushes.Yellow };
-
+            _horizontalLine = new Line() { Stroke = this.HorizontalLineStroke, StrokeThickness = 2 };
+            _verticalLine = new Line() { Stroke = this.VerticalLineStroke, StrokeThickness = 2 };
             this.Children.Add(_horizontalLine);
             this.Children.Add(_verticalLine);
-            this.Children.Add(_circle);
-            this.Children.Add(_text);
+
+            if (this.ShowCircle)
+            {
+                _circle = new Ellipse() { Stroke = this.CircleStroke, Width = CircleRadius, Height = CircleRadius };
+                this.Children.Add(_circle);
+            }
+
+            if (this.ShowCoordinates)
+            {
+                _text = new TextBlock() { Foreground = Brushes.Yellow };
+                this.Children.Add(_text);
+            }
 
             _currentMousePoint = new Point(this.ActualWidth / 2, this.ActualHeight / 2);
             UpdateCursorCrosshair();
@@ -122,14 +149,18 @@ namespace PracticalControls.Controls
             _verticalLine.X2 = _currentMousePoint.X;
             _verticalLine.Y2 = this.ActualHeight;
 
-            Canvas.SetTop(_circle, _currentMousePoint.Y - CircleRadius / 2);
-            Canvas.SetLeft(_circle, _currentMousePoint.X - CircleRadius / 2);
+            if (_circle != null)
+            {
+                Canvas.SetTop(_circle, _currentMousePoint.Y - CircleRadius / 2);
+                Canvas.SetLeft(_circle, _currentMousePoint.X - CircleRadius / 2);
+            }
 
-
-            _text.Text = $"({_currentMousePoint.X}, {_currentMousePoint.Y})";
-            Canvas.SetTop(_text, _currentMousePoint.Y - 32);
-            Canvas.SetLeft(_text, _currentMousePoint.X + 20);
-
+            if (_text != null)
+            {
+                _text.Text = $"({_currentMousePoint.X}, {_currentMousePoint.Y})";
+                Canvas.SetTop(_text, _currentMousePoint.Y - 32);
+                Canvas.SetLeft(_text, _currentMousePoint.X + 20);
+            }
         }
     }
 }

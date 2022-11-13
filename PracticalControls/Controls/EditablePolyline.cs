@@ -285,43 +285,58 @@ namespace PracticalControls.Controls
             PointCollection pointCollection = Points;
 
 
-            if (_isDragging || !this.ShowThumb)
+            if (pointCollection == null || _isDragging || !this.ShowThumb)
                 return size;
 
-            //Clear Old
-            foreach (var visual in _visuals)
+            //Synchronize the number of thumbs
+            if (_visuals.Count < pointCollection.Count)
             {
-                if (visual is Thumb thumb)
+                for (int i = _visuals.Count; i < pointCollection.Count; i++)
                 {
-                    thumb.DragStarted -= Thumb_DragStarted;
-                    thumb.DragDelta -= Thumb_DragDelta;
-                    thumb.DragCompleted -= Thumb_DragCompleted;
+                    Thumb thumb = new Thumb();
+                    thumb.Tag = i;
+                    thumb.DragStarted += Thumb_DragStarted;
+                    thumb.DragDelta += Thumb_DragDelta;
+                    thumb.DragCompleted += Thumb_DragCompleted;
+                    thumb.Style = this.ThumbStyle;
+
+                    _visuals.Add(thumb);
+                    AddVisualChild(thumb);
                 }
-
-                RemoveVisualChild(visual);
             }
-            _visuals.Clear();
-
-            //Add Circle Thumbs
-            for (int i = 0; i < pointCollection.Count; i++)
+            if (_visuals.Count > pointCollection.Count)
             {
-                Thumb thumb = new Thumb();
-                thumb.Tag = i;
-                thumb.DragStarted += Thumb_DragStarted;
-                thumb.DragDelta += Thumb_DragDelta;
-                thumb.DragCompleted += Thumb_DragCompleted;
-                thumb.Style = this.ThumbStyle;
-                thumb.Measure(finalSize);//Measure the desiredSize of Thumb
+                int subCount = _visuals.Count - pointCollection.Count;
+                for (int i = 0; i < subCount; i++)
+                {
+                    var visual = _visuals[pointCollection.Count + i];
+                    if (visual is Thumb thumb)
+                    {
+                        thumb.DragStarted -= Thumb_DragStarted;
+                        thumb.DragDelta -= Thumb_DragDelta;
+                        thumb.DragCompleted -= Thumb_DragCompleted;
+                    }
+
+                    RemoveVisualChild(visual);
+                    _visuals.Remove(visual);
+                }
+            }
+
+            //Arrange the thumbs
+            for (int i = 0; i < _visuals.Count; i++)
+            {
+                Thumb thumb = _visuals[i] as Thumb;
+                if (thumb == null)
+                    continue;
+
+                //Measure the desiredSize of Thumb
+                thumb.Measure(finalSize);
 
                 //Ellipse ellipse = new Ellipse() { Stroke = new SolidColorBrush(Colors.Red), Fill = new SolidColorBrush(Colors.White), StrokeThickness = 1 };
                 Point topLeftPoint = new Point(pointCollection[i].X - thumb.DesiredSize.Width / 2, pointCollection[i].Y - thumb.DesiredSize.Height / 2);
                 Rect rect = new Rect(topLeftPoint, thumb.DesiredSize);
                 thumb.Arrange(rect);
-                _visuals.Add(thumb);
-                AddVisualChild(thumb);
             }
-
-
 
             return size;
         }
@@ -345,15 +360,16 @@ namespace PracticalControls.Controls
             int index = (int)((sender as Thumb).Tag);
             Point point = Points[index];
             Point newPoint = new Point(point.X + e.HorizontalChange, point.Y + e.VerticalChange);
-            this.Points[index] = newPoint;
 
             //Rearrange the dragging thumb
             Point topLeftPoint = new Point(newPoint.X - thumb.DesiredSize.Width / 2, newPoint.Y - thumb.DesiredSize.Height / 2);
             Rect rect = new Rect(topLeftPoint, thumb.DesiredSize);
             thumb.Arrange(rect);
 
-            //this.InvalidateMeasure();
-            //this.InvalidateArrange();
+            this.Points[index] = newPoint;
+            this.InvalidateMeasure();
+            this.InvalidateVisual();
+            //this.Points = new PointCollection(this.Points);
         }
 
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)

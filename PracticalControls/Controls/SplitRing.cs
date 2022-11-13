@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 namespace PracticalControls.Controls
 {
-    public class SplitRing : Canvas
+    public class SplitRing : FrameworkElement
     {
         //Ring
         DrawingVisual _ring;
@@ -41,6 +41,18 @@ namespace PracticalControls.Controls
 
         #region Custom Dependency Properties
 
+        /// <summary>
+        /// The ratio of outter radius and inner radius.
+        /// </summary>
+        public double RadiusRatio
+        {
+            get { return (double)GetValue(RadiusRatioProperty); }
+            set { SetValue(RadiusRatioProperty, value); }
+        }
+
+        public static readonly DependencyProperty RadiusRatioProperty =
+            DependencyProperty.Register("RadiusRatio", typeof(double), typeof(SplitRing), new PropertyMetadata(2d));
+
         public double FontSize
         {
             get { return (double)GetValue(FontSizeProperty); }
@@ -48,9 +60,6 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty FontSizeProperty = TextBlock.FontSizeProperty.AddOwner(typeof(SplitRing));
-        //DependencyProperty.Register("FontSize", typeof(double), typeof(SplitRing), new PropertyMetadata(0));
-
-
 
         /// <summary>
         /// Texts in split areas
@@ -122,7 +131,7 @@ namespace PracticalControls.Controls
             var blackPen = new Pen(Brushes.Black, strokeThickness);
 
             double outterRadius = Math.Min(this.ActualWidth / 2, this.ActualHeight / 2);
-            double innerRaius = outterRadius / 2;
+            double innerRaius = outterRadius / this.RadiusRatio;
 
             if (this.SplitCount > 0)
             {

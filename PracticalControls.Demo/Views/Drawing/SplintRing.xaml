@@ -12,7 +12,7 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <controls:SplitRing TextsSource="{Binding TextNums}" SplitCount="6" FontSize="16" Angle="90"/>
+        <controls:SplitRing TextsSource="{Binding TextNums}" SplitCount="6" FontSize="16" Angle="90" RadiusRatio="3"/>
         <controls:SplitRing Grid.Column="1" TextsSource="{Binding TextNums}" SplitCount="20" FontSize="16"  IsRandomColor="True"/>
     </Grid>
 </UserControl>
