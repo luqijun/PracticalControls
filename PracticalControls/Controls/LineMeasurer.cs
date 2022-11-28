@@ -16,6 +16,9 @@ using System.Windows.Shapes;
 
 namespace PracticalControls.Controls
 {
+    /// <summary>
+    /// Line Measurer
+    /// </summary>
     public class LineMeasurer : Control
     {
         #region Constructors
@@ -30,7 +33,7 @@ namespace PracticalControls.Controls
         }
 
         /// <summary>
-        /// Instantiates a new instance of a Ruler.
+        /// Instantiates a new instance of a LineMeasurer.
         /// </summary>
         public LineMeasurer()
         {
@@ -59,9 +62,9 @@ namespace PracticalControls.Controls
 
         private static void OnExecuteDeleteLineCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            LineMeasurer ruler = (LineMeasurer)sender;
+            LineMeasurer measurer = (LineMeasurer)sender;
             MeasureLineInfo selectedLineInfo = e.Parameter as MeasureLineInfo;
-            var linesSource = ruler.LinesSource as IList<MeasureLineInfo>;
+            var linesSource = measurer.LinesSource as IList<MeasureLineInfo>;
             linesSource.Remove(selectedLineInfo);
         }
 
@@ -118,8 +121,8 @@ namespace PracticalControls.Controls
 
         private static void OnScalePorpertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var ruler = d as LineMeasurer;
-            ruler.UpdateLinesSource();
+            var measurer = d as LineMeasurer;
+            measurer.UpdateLinesSource();
         }
 
         private void UpdateLinesSource()
@@ -145,8 +148,8 @@ namespace PracticalControls.Controls
 
         private static void OnLinesSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var ruler = d as LineMeasurer;
-            ruler.UpdateLinesSource();
+            var measurer = d as LineMeasurer;
+            measurer.UpdateLinesSource();
         }
 
         public bool IsMeasuring
@@ -162,12 +165,12 @@ namespace PracticalControls.Controls
         {
             base.OnApplyTemplate();
 
-            this.PreviewMouseLeftButtonDown += Ruler_PreviewMouseLeftButtonDown;
-            this.PreviewMouseLeftButtonUp += Ruler_PreviewMouseLeftButtonUp;
-            this.PreviewMouseMove += Ruler_PreviewMouseMove;
+            this.PreviewMouseLeftButtonDown += Measurer_PreviewMouseLeftButtonDown;
+            this.PreviewMouseLeftButtonUp += Measurer_PreviewMouseLeftButtonUp;
+            this.PreviewMouseMove += Measurer_PreviewMouseMove;
         }
 
-        private void Ruler_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Measurer_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             _movingLine = null;
             _currentPoint = e.GetPosition(this);
@@ -209,12 +212,12 @@ namespace PracticalControls.Controls
             }
         }
 
-        private void Ruler_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Measurer_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             _movingLine = null;
         }
 
-        private void Ruler_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void Measurer_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _currentPoint = e.GetPosition(this);
 
