@@ -3,7 +3,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         
-        <ResourceDictionary Source="pack://application:,,,/PracticalControls;component/Themes/Ruler.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/PracticalControls;component/Themes/LineMeasurer.xaml" />
 
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

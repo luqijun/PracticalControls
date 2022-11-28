@@ -22,15 +22,15 @@ namespace PracticalControls.Demo.Views
     /// <summary>
     /// Interaction logic for Ruler.xaml
     /// </summary>
-    public partial class Ruler : UserControl
+    public partial class MeasureLine : UserControl
     {
-        RulerViewModel _vm;
+        LineMeasurerViewModel _vm;
 
-        public Ruler()
+        public MeasureLine()
         {
             InitializeComponent();
 
-            _vm = new RulerViewModel();
+            _vm = new LineMeasurerViewModel();
             this.DataContext = _vm;
             this.SizeChanged += Ruler_SizeChanged;
         }
@@ -39,12 +39,12 @@ namespace PracticalControls.Demo.Views
         {
             int imgWidth = 400;
             int imgHeight = 200;
-            this.ruler.ScaleX = this.ruler.ActualWidth / imgWidth;
-            this.ruler.ScaleY = this.ruler.ActualHeight / imgHeight;
+            this.lineMeasurer.ScaleX = this.lineMeasurer.ActualWidth / imgWidth;
+            this.lineMeasurer.ScaleY = this.lineMeasurer.ActualHeight / imgHeight;
         }
     }
 
-    public class RulerViewModel : ViewModelBase
+    public class LineMeasurerViewModel : ViewModelBase
     {
         private ObservableCollection<MeasureLineInfo> _lineInfos;
 
@@ -54,7 +54,7 @@ namespace PracticalControls.Demo.Views
             set { Set(ref _lineInfos, value); }
         }
 
-        public RulerViewModel()
+        public LineMeasurerViewModel()
         {
             this.LineInfos = new ObservableCollection<MeasureLineInfo>();
 

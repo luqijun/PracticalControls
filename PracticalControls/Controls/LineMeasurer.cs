@@ -16,23 +16,23 @@ using System.Windows.Shapes;
 
 namespace PracticalControls.Controls
 {
-    public class Ruler : Control
+    public class LineMeasurer : Control
     {
         #region Constructors
 
-        static Ruler()
+        static LineMeasurer()
         {
             // Initialize CommandCollection & CommandLink(s)
             InitializeCommands();
 
             // For auto find template in Generic.xaml
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(Ruler), new FrameworkPropertyMetadata(typeof(Ruler)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(LineMeasurer), new FrameworkPropertyMetadata(typeof(LineMeasurer)));
         }
 
         /// <summary>
         /// Instantiates a new instance of a Ruler.
         /// </summary>
-        public Ruler()
+        public LineMeasurer()
         {
             this.IsHitTestVisible = true;
         }
@@ -53,13 +53,13 @@ namespace PracticalControls.Controls
 
         static void InitializeCommands()
         {
-            _deleteLineCommand = new RoutedCommand("DeleteLineCommand", typeof(Ruler));
-            CommandManager.RegisterClassCommandBinding(typeof(Ruler), new CommandBinding(_deleteLineCommand, OnExecuteDeleteLineCommand, null));
+            _deleteLineCommand = new RoutedCommand("DeleteLineCommand", typeof(LineMeasurer));
+            CommandManager.RegisterClassCommandBinding(typeof(LineMeasurer), new CommandBinding(_deleteLineCommand, OnExecuteDeleteLineCommand, null));
         }
 
         private static void OnExecuteDeleteLineCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            Ruler ruler = (Ruler)sender;
+            LineMeasurer ruler = (LineMeasurer)sender;
             MeasureLineInfo selectedLineInfo = e.Parameter as MeasureLineInfo;
             var linesSource = ruler.LinesSource as IList<MeasureLineInfo>;
             linesSource.Remove(selectedLineInfo);
@@ -75,7 +75,7 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty StrokeProperty =
-            DependencyProperty.Register("Stroke", typeof(Brush), typeof(Ruler), new PropertyMetadata(Brushes.Black));
+            DependencyProperty.Register("Stroke", typeof(Brush), typeof(LineMeasurer), new PropertyMetadata(Brushes.Black));
 
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty AutoResizeProperty =
-            DependencyProperty.Register("AutoResize", typeof(bool), typeof(Ruler), new PropertyMetadata(false));
+            DependencyProperty.Register("AutoResize", typeof(bool), typeof(LineMeasurer), new PropertyMetadata(false));
 
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty ScaleXProperty =
-            DependencyProperty.Register("ScaleX", typeof(double), typeof(Ruler), new PropertyMetadata(1d, OnScalePorpertyChanged));
+            DependencyProperty.Register("ScaleX", typeof(double), typeof(LineMeasurer), new PropertyMetadata(1d, OnScalePorpertyChanged));
 
 
         /// <summary>
@@ -114,11 +114,11 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty ScaleYProperty =
-            DependencyProperty.Register("ScaleY", typeof(double), typeof(Ruler), new PropertyMetadata(1d, OnScalePorpertyChanged));
+            DependencyProperty.Register("ScaleY", typeof(double), typeof(LineMeasurer), new PropertyMetadata(1d, OnScalePorpertyChanged));
 
         private static void OnScalePorpertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var ruler = d as Ruler;
+            var ruler = d as LineMeasurer;
             ruler.UpdateLinesSource();
         }
 
@@ -141,11 +141,11 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty LinesSourceProperty =
-            DependencyProperty.Register("LinesSource", typeof(object), typeof(Ruler), new FrameworkPropertyMetadata(new List<MeasureLineInfo>(), FrameworkPropertyMetadataOptions.None, OnLinesSourcePropertyChanged));
+            DependencyProperty.Register("LinesSource", typeof(object), typeof(LineMeasurer), new FrameworkPropertyMetadata(new List<MeasureLineInfo>(), FrameworkPropertyMetadataOptions.None, OnLinesSourcePropertyChanged));
 
         private static void OnLinesSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var ruler = d as Ruler;
+            var ruler = d as LineMeasurer;
             ruler.UpdateLinesSource();
         }
 
@@ -156,7 +156,7 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty IsMeasuringProperty =
-            DependencyProperty.Register("IsMeasuring", typeof(bool), typeof(Ruler), new PropertyMetadata(false));
+            DependencyProperty.Register("IsMeasuring", typeof(bool), typeof(LineMeasurer), new PropertyMetadata(false));
 
         public override void OnApplyTemplate()
         {

@@ -2,13 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:PracticalControls.Controls">
 
-    <Style x:Key="PracticalControls.Styles.Line.Ruler"
+    <Style x:Key="PracticalControls.Styles.Line.LineMeasurer"
            BasedOn="{StaticResource PracticalControls.Styles.Line.MouseOver}"
            TargetType="Line">
         <Setter Property="Cursor" Value="Hand" />
     </Style>
 
-    <ControlTemplate x:Key="PracticalControls.Templates.Ruler" TargetType="controls:Ruler">
+    <ControlTemplate x:Key="PracticalControls.Templates.LineMeasurer" TargetType="controls:LineMeasurer">
         <Grid Background="Transparent">
             <ItemsControl ItemsSource="{TemplateBinding LinesSource}"
                           ScrollViewer.CanContentScroll="True"
@@ -33,7 +33,7 @@
                             <Canvas.ContextMenu>
                                 <ContextMenu x:Name="menu">
                                     <MenuItem Header="删除" 
-                                              Command="{x:Static controls:Ruler.DeleteLineCommand}" 
+                                              Command="{x:Static controls:LineMeasurer.DeleteLineCommand}" 
                                               CommandParameter="{Binding}"
                                               CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ContextMenu}}}"/>
                                 </ContextMenu>
@@ -41,12 +41,12 @@
 
                             <TextBlock Canvas.Left="{Binding TextPositionX}"
                                        Canvas.Top="{Binding TextPositionY}"
-                                       Foreground="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}"
+                                       Foreground="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:LineMeasurer}}"
                                        Text="{Binding OriginDistance}" />
 
                             <Line x:Name="line"
-                                  Stroke="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}"
-                                  Style="{DynamicResource PracticalControls.Styles.Line.Ruler}"
+                                  Stroke="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:LineMeasurer}}"
+                                  Style="{DynamicResource PracticalControls.Styles.Line.LineMeasurer}"
                                   X1="{Binding StartPoint.X}"
                                   X2="{Binding EndPoint.X}"
                                   Y1="{Binding StartPoint.Y}"
@@ -54,7 +54,7 @@
 
                             <!--  Start Circle  -->
                             <Path Name="startCircle"
-                                  Stroke="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}"
+                                  Stroke="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:LineMeasurer}}"
                                   StrokeThickness="0.5"
                                   Visibility="Collapsed">
                                 <Path.Data>
@@ -66,7 +66,7 @@
 
                             <!--  End Circle  -->
                             <Path Name="endCircle"
-                                  Stroke="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}"
+                                  Stroke="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:LineMeasurer}}"
                                   StrokeThickness="0.5"
                                   Visibility="Collapsed">
                                 <Path.Data>
@@ -84,7 +84,7 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding IsMouseOver, ElementName=line}" Value="True" />
-                                    <Condition Binding="{Binding IsMeasuring, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}" Value="False" />
+                                    <Condition Binding="{Binding IsMeasuring, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:LineMeasurer}}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="Cursor" Value="SizeAll" />
                             </MultiDataTrigger>
@@ -98,7 +98,7 @@
     </ControlTemplate>
 
 
-    <Style TargetType="controls:Ruler">
-        <Setter Property="Template" Value="{StaticResource PracticalControls.Templates.Ruler}" />
+    <Style TargetType="controls:LineMeasurer">
+        <Setter Property="Template" Value="{StaticResource PracticalControls.Templates.LineMeasurer}" />
     </Style>
 </ResourceDictionary>
