@@ -7,6 +7,7 @@
         <ResourceDictionary Source="pack://application:,,,/PracticalControls;component/Resource/Styles/DataGridTreeColumnStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/PracticalControls;component/Resource/Styles/ExcelDataGridStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/PracticalControls;component/Resource/Styles/ThumbStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/PracticalControls;component/Resource/Styles/LineStyle.xaml"/>
 
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

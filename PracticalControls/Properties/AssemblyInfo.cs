@@ -10,8 +10,8 @@ using System.Windows.Markup;
                                               // app, or any theme specific resource dictionaries)
 )]
 
-[assembly: XmlnsDefinition("https://lqjun.com/Dirkster99/AvalonDock", "PracticalControls")]
-[assembly: XmlnsDefinition("https://lqjun.com/Dirkster99/AvalonDock", "PracticalControls.Controls")]
+[assembly: XmlnsDefinition("https://lqjun.com/PracticalControls", "PracticalControls")]
+[assembly: XmlnsDefinition("https://lqjun.com/PracticalControls", "PracticalControls.Controls")]
 
 [assembly: XmlnsPrefix("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "PracticalControls")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "PracticalControls.Controls")]

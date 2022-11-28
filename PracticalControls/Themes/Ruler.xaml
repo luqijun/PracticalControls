@@ -1,0 +1,104 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:PracticalControls.Controls">
+
+    <Style x:Key="PracticalControls.Styles.Line.Ruler"
+           BasedOn="{StaticResource PracticalControls.Styles.Line.MouseOver}"
+           TargetType="Line">
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <ControlTemplate x:Key="PracticalControls.Templates.Ruler" TargetType="controls:Ruler">
+        <Grid Background="Transparent">
+            <ItemsControl ItemsSource="{TemplateBinding LinesSource}"
+                          ScrollViewer.CanContentScroll="True"
+                          Style="{x:Null}"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          VirtualizingPanel.VirtualizationMode="Recycling">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                        <!--<Grid IsItemsHost="True" />-->
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <!--<ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding StartPoint.X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding StartPoint.Y}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>-->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Canvas>
+                            <Canvas.ContextMenu>
+                                <ContextMenu x:Name="menu">
+                                    <MenuItem Header="删除" 
+                                              Command="{x:Static controls:Ruler.DeleteLineCommand}" 
+                                              CommandParameter="{Binding}"
+                                              CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ContextMenu}}}"/>
+                                </ContextMenu>
+                            </Canvas.ContextMenu>
+
+                            <TextBlock Canvas.Left="{Binding TextPositionX}"
+                                       Canvas.Top="{Binding TextPositionY}"
+                                       Foreground="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}"
+                                       Text="{Binding OriginDistance}" />
+
+                            <Line x:Name="line"
+                                  Stroke="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}"
+                                  Style="{DynamicResource PracticalControls.Styles.Line.Ruler}"
+                                  X1="{Binding StartPoint.X}"
+                                  X2="{Binding EndPoint.X}"
+                                  Y1="{Binding StartPoint.Y}"
+                                  Y2="{Binding EndPoint.Y}" />
+
+                            <!--  Start Circle  -->
+                            <Path Name="startCircle"
+                                  Stroke="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}"
+                                  StrokeThickness="0.5"
+                                  Visibility="Collapsed">
+                                <Path.Data>
+                                    <EllipseGeometry Center="{Binding StartPoint}"
+                                                     RadiusX="5"
+                                                     RadiusY="5" />
+                                </Path.Data>
+                            </Path>
+
+                            <!--  End Circle  -->
+                            <Path Name="endCircle"
+                                  Stroke="{Binding Stroke, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}"
+                                  StrokeThickness="0.5"
+                                  Visibility="Collapsed">
+                                <Path.Data>
+                                    <EllipseGeometry Center="{Binding EndPoint}"
+                                                     RadiusX="5"
+                                                     RadiusY="5" />
+                                </Path.Data>
+                            </Path>
+                        </Canvas>
+                        <DataTemplate.Triggers>
+                            <Trigger SourceName="line" Property="IsMouseOver" Value="true">
+                                <Setter TargetName="startCircle" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="endCircle" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, ElementName=line}" Value="True" />
+                                    <Condition Binding="{Binding IsMeasuring, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:Ruler}}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Cursor" Value="SizeAll" />
+                            </MultiDataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!--<DrawingVisual />-->
+        </Grid>
+    </ControlTemplate>
+
+
+    <Style TargetType="controls:Ruler">
+        <Setter Property="Template" Value="{StaticResource PracticalControls.Templates.Ruler}" />
+    </Style>
+</ResourceDictionary>

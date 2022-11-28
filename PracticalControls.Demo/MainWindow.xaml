@@ -23,8 +23,13 @@
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <views:SplintRing />
-                    <views:CrossHair Grid.Row="1"  />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <views:SplintRing Grid.Row="0" Grid.Column="0" />
+                    <views:CrossHair Grid.Row="0" Grid.Column="1" />
+                    <views:Ruler Grid.Row="1" Grid.Column="0" />
                 </Grid>
             </TabItem>
             <TabItem Header="Polyline">
