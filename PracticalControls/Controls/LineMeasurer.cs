@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight;
 using PracticalControls.Common.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -144,7 +145,7 @@ namespace PracticalControls.Controls
         }
 
         public static readonly DependencyProperty LinesSourceProperty =
-            DependencyProperty.Register("LinesSource", typeof(object), typeof(LineMeasurer), new FrameworkPropertyMetadata(new List<MeasureLineInfo>(), FrameworkPropertyMetadataOptions.None, OnLinesSourcePropertyChanged));
+            DependencyProperty.Register("LinesSource", typeof(object), typeof(LineMeasurer), new FrameworkPropertyMetadata(new ObservableCollection<MeasureLineInfo>(), FrameworkPropertyMetadataOptions.None, OnLinesSourcePropertyChanged));
 
         private static void OnLinesSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

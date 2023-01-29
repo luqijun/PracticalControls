@@ -16,7 +16,18 @@
 
     </Window.Resources>
     <Grid>
-        <TabControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Menu>
+            <MenuItem Header="Windows" >
+                <MenuItem Header="Waiting" Tag="Waiting" Click="MenuItem_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <TabControl Grid.Row="1">
             <TabItem Header="Drawing">
                 <Grid>
                     <Grid.RowDefinitions >

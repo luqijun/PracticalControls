@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -69,7 +71,52 @@ namespace PracticalControls.Controls
             base.OnInitialized(e);
 
             InitVisuals();
+
+            this.Cursor = Cursors.SizeAll;
+            this.Fill = new SolidColorBrush(Colors.Yellow);
+
+            this.PreviewMouseLeftButtonDown += AngleMeasurer_PreviewMouseLeftButtonDown;
+            this.PreviewMouseLeftButtonUp += AngleMeasurer_PreviewMouseLeftButtonUp;
+            this.PreviewMouseMove += AngleMeasurer_PreviewMouseMove;
         }
+
+        #region Move 
+
+        Point? _startPoint;
+
+        private void AngleMeasurer_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource is AngleMeasurer)
+                _startPoint = e.GetPosition(this);
+
+        }
+        private void AngleMeasurer_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            _startPoint = null;
+        }
+
+        private void AngleMeasurer_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (_startPoint != null && e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                Point currentPoint = e.GetPosition(this);
+                if (currentPoint.X < 0 || currentPoint.X >= this.ActualWidth)
+                    return;
+                if (currentPoint.Y < 0 || currentPoint.Y >= this.ActualHeight)
+                    return;
+
+                Vector moveDirection = currentPoint - _startPoint.Value;
+                if (moveDirection.Length > 0)
+                {
+                    var newPoints = this.Points.Select(p => p + moveDirection);
+                    this.Points = new PointCollection(newPoints);
+                    _startPoint = currentPoint;
+                }
+            }
+        }
+
+        #endregion
+
 
         /// <summary>
         /// Whether auto resize line when resizing control
@@ -117,6 +164,9 @@ namespace PracticalControls.Controls
 
         private void UpdatePointsSource()
         {
+            if (_startPoint != null)
+                return;
+
             if (_originPoints != null)
             {
                 PointCollection points = new PointCollection(_originPoints.Select(p => ConvertToUIPoint(p)));
@@ -149,7 +199,7 @@ namespace PracticalControls.Controls
 
         public static readonly DependencyProperty PointsProperty =
             DependencyProperty.Register("Points", typeof(PointCollection), typeof(AngleMeasurer),
-                                        new FrameworkPropertyMetadata(new PointCollection(), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, OnPointsPropertyChanged));
+                                        new FrameworkPropertyMetadata(new PointCollection(), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnPointsPropertyChanged));
 
         private static void OnPointsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -169,7 +219,6 @@ namespace PracticalControls.Controls
 
         public static readonly DependencyProperty ThumbStyleProperty =
                 DependencyProperty.Register("ThumbStyle", typeof(Style), typeof(AngleMeasurer), new PropertyMetadata(default));
-
 
         /// <summary>
         /// The radius of arc
@@ -216,7 +265,6 @@ namespace PracticalControls.Controls
             _tbAngle = new TextBlock() { Foreground = this.Stroke };
             _visuals.Add(_tbAngle);
             AddVisualChild(_tbAngle);
-            AddLogicalChild(_tbAngle);
         }
 
         bool _isDragging = false;
@@ -257,17 +305,13 @@ namespace PracticalControls.Controls
 
         protected override Size MeasureOverride(Size constraint)
         {
-            CacheDefiningGeometry();
+            CacheDefiningGeometry(constraint);
             return base.MeasureOverride(constraint);
         }
 
-        private void CacheDefiningGeometry()
+        private void CacheDefiningGeometry(Size constraint)
         {
             PointCollection pointCollection = Points;
-            if (pointCollection == null)
-                return;
-
-            PathFigure pathFigure = new PathFigure();
 
             // Are we degenerate?
             // Yes, if we don't have data
@@ -277,12 +321,20 @@ namespace PracticalControls.Controls
             if (pointCollection.Count < 3)
                 return;
 
+            if (_originPoints.Count < 3)
+                _originPoints = new PointCollection(pointCollection.Select(p => ConvertToOriginPoint(p)));
+
             var startPoint = pointCollection[0];
             var centerPoint = pointCollection[1];
             var endPoint = pointCollection[2];
 
-            PathGeometry polylineGeometry = new PathGeometry();
+            GeometryGroup geometryGroup = new GeometryGroup();
 
+            PathGeometry pathGeometry = new PathGeometry();
+            pathGeometry.FillRule = FillRule.EvenOdd;
+            geometryGroup.Children.Add(pathGeometry);
+
+            PathFigure pathFigure = new PathFigure();
             pathFigure.StartPoint = startPoint;
             Point[] array = new Point[pointCollection.Count - 1];
             for (int i = 1; i < 3; i++)
@@ -290,7 +342,7 @@ namespace PracticalControls.Controls
                 array[i - 1] = pointCollection[i];
             }
             pathFigure.Segments.Add(new PolyLineSegment(array, true));
-            polylineGeometry.Figures.Add(pathFigure);
+            pathGeometry.Figures.Add(pathFigure);
 
             // Arc Line  先计算单位向量 再乘以半径
             double radius = this.ArcRadius;
@@ -323,12 +375,20 @@ namespace PracticalControls.Controls
             pathFigure = new PathFigure();
             pathFigure.StartPoint = arcStartPoint;
             pathFigure.Segments.Add(new ArcSegment(arcEndPoint, new Size(radius, radius), 0d, isLargeArc, SweepDirection.Clockwise, true));
-            polylineGeometry.Figures.Add(pathFigure);
+            pathFigure.Segments.Add(new LineSegment(centerPoint, true));
+            pathFigure.Segments.Add(new LineSegment(startPoint, true));
+            pathGeometry.Figures.Add(pathFigure);
 
-            if (polylineGeometry.Bounds == Rect.Empty)
+
+            // Add rectangle for mousemoving test
+            //RectangleGeometry rectangleGeometry = new RectangleGeometry();
+            //rectangleGeometry.Rect = new Rect(constraint);
+            //pathGeometry.AddGeometry(rectangleGeometry);
+
+            if (pathGeometry.Bounds == Rect.Empty)
                 _polylineGeometry = Geometry.Empty;
             else
-                _polylineGeometry = polylineGeometry;
+                _polylineGeometry = geometryGroup;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -361,6 +421,24 @@ namespace PracticalControls.Controls
             _tbAngle.Arrange(txtRect);
 
             return base.ArrangeOverride(finalSize);
+        }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+
+            // To draw background. This can help to hit the control.
+            drawingContext.DrawRectangle(Brushes.Transparent, new Pen(Brushes.Transparent, 1), new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+        }
+
+        private bool IsPointValid(Point p)
+        {
+            if (p.X == double.NaN || p.Y == double.NaN || double.IsInfinity(p.X) || double.IsInfinity(p.Y))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

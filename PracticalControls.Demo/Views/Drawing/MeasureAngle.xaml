@@ -14,6 +14,12 @@
                        Points="{Binding Points}"
                        Stroke="Red"
                        StrokeThickness="1"
-                       ThumbStyle="{StaticResource PracticalControls.Styles.Thumb.Circle}" />
+                       ThumbStyle="{StaticResource PracticalControls.Styles.Thumb.Circle}">
+            <AngleMeasurer.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="miReset" Header="重置" Click="MiReset_Click" />
+                </ContextMenu>
+            </AngleMeasurer.ContextMenu>
+        </AngleMeasurer>
     </Grid>
 </UserControl>

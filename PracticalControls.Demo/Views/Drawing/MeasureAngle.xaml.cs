@@ -38,6 +38,11 @@ namespace PracticalControls.Demo.Views
             this.angleMeasurer.ScaleX = this.angleMeasurer.ActualWidth / imgWidth;
             this.angleMeasurer.ScaleY = this.angleMeasurer.ActualHeight / imgHeight;
         }
+
+        private void MiReset_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.InitData();
+        }
     }
 
     public class MeasureAngleViewModel : ViewModelBase
@@ -51,6 +56,11 @@ namespace PracticalControls.Demo.Views
         }
 
         public MeasureAngleViewModel()
+        {
+            InitData();
+        }
+
+        public void InitData()
         {
             this.Points = new PointCollection();
             this.Points.Add(new Point(80, 100));
