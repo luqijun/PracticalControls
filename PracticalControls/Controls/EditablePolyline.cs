@@ -60,7 +60,6 @@ namespace PracticalControls.Controls
 
         #region Custom Dependency Properties
 
-
         /// <summary>
         /// Thumb Style
         /// </summary>
@@ -88,9 +87,65 @@ namespace PracticalControls.Controls
 
 
 
+        /// <summary>
+        /// Thumbs Interval
+        /// </summary>
+        public int ThumbsInterval
+        {
+            get { return (int)GetValue(ThumbsIntervalProperty); }
+            set { SetValue(ThumbsIntervalProperty, value); }
+        }
+
+        public static readonly DependencyProperty ThumbsIntervalProperty =
+            DependencyProperty.Register("ThumbsInterval", typeof(int), typeof(EditablePolyline), new FrameworkPropertyMetadata(-1, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+
+
+        /// <summary>
+        /// Drag mode 
+        /// </summary>
+        public DragMode DragMode
+        {
+            get { return (DragMode)GetValue(DragModeProperty); }
+            set { SetValue(DragModeProperty, value); }
+        }
+
+        public static readonly DependencyProperty DragModeProperty =
+            DependencyProperty.Register("DragMode", typeof(DragMode), typeof(EditablePolyline), new PropertyMetadata(DragMode.Both));
+
         #endregion
 
         #region Custom Events
+
+        public static readonly RoutedEvent DragThumbStartedEvent = EventManager.RegisterRoutedEvent(
+          name: "DragThumbStarted",
+          routingStrategy: RoutingStrategy.Bubble,
+          handlerType: typeof(RoutedEventHandler),
+          ownerType: typeof(EditablePolyline));
+
+        /// <summary>
+        /// Drag thumb started
+        /// </summary>
+        public event RoutedEventHandler DragThumbStarted
+        {
+            add { AddHandler(DragThumbStartedEvent, value); }
+            remove { RemoveHandler(DragThumbStartedEvent, value); }
+        }
+
+        public static readonly RoutedEvent DragThumbDeltaEvent = EventManager.RegisterRoutedEvent(
+           name: "DragThumbDelta",
+           routingStrategy: RoutingStrategy.Bubble,
+           handlerType: typeof(RoutedEventHandler),
+           ownerType: typeof(EditablePolyline));
+
+        /// <summary>
+        /// Drag thumb delta
+        /// </summary>
+        public event RoutedEventHandler DragThumbDelta
+        {
+            add { AddHandler(DragThumbDeltaEvent, value); }
+            remove { RemoveHandler(DragThumbDeltaEvent, value); }
+        }
+
 
         public static readonly RoutedEvent DragThumbCompletedEvent = EventManager.RegisterRoutedEvent(
             name: "DragThumbCompleted",
@@ -107,13 +162,38 @@ namespace PracticalControls.Controls
             remove { RemoveHandler(DragThumbCompletedEvent, value); }
         }
 
+        private void RaiseDragThumbStartedEvent(object sender)
+        {
+            PloylineDragEventArgs routedEventArgs = new(routedEvent: DragThumbStartedEvent);
+            routedEventArgs.Source = sender;
+            routedEventArgs.PointIndex = _draggingPointIndex;
+            routedEventArgs.OldPoint = _dragStartPoint;
+            routedEventArgs.NewPoint = _dragStartPoint;
+
+            // Raise the event, which will bubble up through the element tree.
+            RaiseEvent(routedEventArgs);
+        }
+
+        private void RaiseDragThumbDeltaEvent(object sender)
+        {
+            PloylineDragEventArgs routedEventArgs = new(routedEvent: DragThumbDeltaEvent);
+            routedEventArgs.Source = sender;
+            routedEventArgs.PointIndex = _draggingPointIndex;
+            routedEventArgs.OldPoint = _draggingOldPoint;
+            routedEventArgs.NewPoint = this.Points[_draggingPointIndex];
+
+            // Raise the event, which will bubble up through the element tree.
+            RaiseEvent(routedEventArgs);
+        }
+
         private void RaiseDragThumbCompletedEvent(object sender)
         {
             // Create a RoutedEventArgs instance.
             PloylineDragEventArgs routedEventArgs = new(routedEvent: DragThumbCompletedEvent);
             routedEventArgs.Source = sender;
             routedEventArgs.PointIndex = _draggingPointIndex;
-            routedEventArgs.Point = this.Points[_draggingPointIndex];
+            routedEventArgs.OldPoint = _dragStartPoint;
+            routedEventArgs.NewPoint = this.Points[_draggingPointIndex];
 
             // Raise the event, which will bubble up through the element tree.
             RaiseEvent(routedEventArgs);
@@ -150,7 +230,12 @@ namespace PracticalControls.Controls
         /// </summary>
         public static readonly DependencyProperty PointsProperty = DependencyProperty.Register(
                 "Points", typeof(PointCollection), typeof(EditablePolyline),
-                new FrameworkPropertyMetadata(new PointCollection(), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+                new FrameworkPropertyMetadata(new PointCollection(), FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure, OnPointsPropertyChanged));
+
+        private static void OnPointsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
 
         /// <summary>
         /// Points property
@@ -284,17 +369,71 @@ namespace PracticalControls.Controls
             Size size = base.ArrangeOverride(finalSize);
             PointCollection pointCollection = Points;
 
+            // Clear Thumbs
+            if (!this.ShowThumb)
+            {
+                foreach (var visual in _visuals)
+                {
+                    if (visual is Thumb)
+                        RemoveVisualChild(visual);
+                }
+                _visuals.Clear();
+                return size;
+            }
 
-            if (pointCollection == null || _isDragging || !this.ShowThumb)
+            if (pointCollection == null || pointCollection.Count == 0 || _isDragging)
                 return size;
 
             //Synchronize the number of thumbs
-            if (_visuals.Count < pointCollection.Count)
+            SynchronizeThumbs();
+
+            //Arrange the thumbs
+            for (int i = 0; i < _visuals.Count; i++)
             {
-                for (int i = _visuals.Count; i < pointCollection.Count; i++)
+                Thumb thumb = _visuals[i] as Thumb;
+                if (thumb == null)
+                    continue;
+
+                int pointIndex = (int)thumb.Tag;
+                Point point = pointCollection[pointIndex];
+
+                //Measure the desiredSize of Thumb
+                thumb.Measure(finalSize);
+
+                //Ellipse ellipse = new Ellipse() { Stroke = new SolidColorBrush(Colors.Red), Fill = new SolidColorBrush(Colors.White), StrokeThickness = 1 };
+                Point topLeftPoint = new Point(point.X - thumb.DesiredSize.Width / 2, point.Y - thumb.DesiredSize.Height / 2);
+                Rect rect = new Rect(topLeftPoint, thumb.DesiredSize);
+                thumb.Arrange(rect);
+            }
+
+            return size;
+        }
+
+        /// <summary>
+        /// Synchronize the number of thumbs
+        /// </summary>
+        private void SynchronizeThumbs()
+        {
+            if (this.ThumbsInterval == -1)
+                return;
+
+            PointCollection pointCollection = Points;
+            if (pointCollection.Count == 0)
+                return;
+
+            int thumbsInterval = Math.Max(1, this.ThumbsInterval);
+
+            int currentThumbCount = _visuals.Count;
+            int targetThumbCount = (int)Math.Ceiling(pointCollection.Count * 1.0 / thumbsInterval) + 1;
+
+            // Add Thumbs
+            if (currentThumbCount < targetThumbCount)
+            {
+                for (int i = currentThumbCount; i < targetThumbCount; i++)
                 {
                     Thumb thumb = new Thumb();
-                    thumb.Tag = i;
+                    thumb.Tag = Math.Min(pointCollection.Count - 1, i * thumbsInterval);
+                    thumb.PreviewMouseLeftButtonDown += Thumb_PreviewMouseLeftButtonDown;
                     thumb.DragStarted += Thumb_DragStarted;
                     thumb.DragDelta += Thumb_DragDelta;
                     thumb.DragCompleted += Thumb_DragCompleted;
@@ -304,12 +443,14 @@ namespace PracticalControls.Controls
                     AddVisualChild(thumb);
                 }
             }
-            if (_visuals.Count > pointCollection.Count)
+
+            // Remove Thumbs
+            if (currentThumbCount > targetThumbCount)
             {
-                int subCount = _visuals.Count - pointCollection.Count;
+                int subCount = currentThumbCount - targetThumbCount;
                 for (int i = 0; i < subCount; i++)
                 {
-                    var visual = _visuals[pointCollection.Count + i];
+                    var visual = _visuals.LastOrDefault();
                     if (visual is Thumb thumb)
                     {
                         thumb.DragStarted -= Thumb_DragStarted;
@@ -320,36 +461,36 @@ namespace PracticalControls.Controls
                     RemoveVisualChild(visual);
                     _visuals.Remove(visual);
                 }
+
+                // Reset Tag
+                for (int i = 0; i < _visuals.Count; i++)
+                {
+                    Thumb thumb = _visuals[i] as Thumb;
+                    thumb.Tag = Math.Min(pointCollection.Count - 1, i * thumbsInterval);
+                }
             }
+        }
 
-            //Arrange the thumbs
-            for (int i = 0; i < _visuals.Count; i++)
-            {
-                Thumb thumb = _visuals[i] as Thumb;
-                if (thumb == null)
-                    continue;
+        private void Thumb_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
 
-                //Measure the desiredSize of Thumb
-                thumb.Measure(finalSize);
-
-                //Ellipse ellipse = new Ellipse() { Stroke = new SolidColorBrush(Colors.Red), Fill = new SolidColorBrush(Colors.White), StrokeThickness = 1 };
-                Point topLeftPoint = new Point(pointCollection[i].X - thumb.DesiredSize.Width / 2, pointCollection[i].Y - thumb.DesiredSize.Height / 2);
-                Rect rect = new Rect(topLeftPoint, thumb.DesiredSize);
-                thumb.Arrange(rect);
-            }
-
-            return size;
         }
 
         #region Thumb Events
 
         int _draggingPointIndex = -1;
         bool _isDragging = false;
+        Point _dragStartPoint;
+        Point _draggingOldPoint;
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
         {
             _isDragging = true;
             _draggingPointIndex = (int)((sender as Thumb).Tag);
+            _dragStartPoint = this.Points[_draggingPointIndex];
+            _draggingOldPoint = _dragStartPoint;
+
+            RaiseDragThumbStartedEvent(sender);
         }
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -358,8 +499,10 @@ namespace PracticalControls.Controls
 
             //Change point value
             int index = (int)((sender as Thumb).Tag);
+            double horizontalChagne = this.DragMode == DragMode.Vertical ? 0d : e.HorizontalChange;
+            double verticalChagne = this.DragMode == DragMode.Horizontal ? 0d : e.VerticalChange;
             Point point = Points[index];
-            Point newPoint = new Point(point.X + e.HorizontalChange, point.Y + e.VerticalChange);
+            Point newPoint = new Point(point.X + horizontalChagne, point.Y + verticalChagne);
 
             //Rearrange the dragging thumb
             Point topLeftPoint = new Point(newPoint.X - thumb.DesiredSize.Width / 2, newPoint.Y - thumb.DesiredSize.Height / 2);
@@ -370,6 +513,10 @@ namespace PracticalControls.Controls
             this.InvalidateMeasure();
             this.InvalidateVisual();
             //this.Points = new PointCollection(this.Points);
+
+            RaiseDragThumbDeltaEvent(sender);
+
+            _draggingOldPoint = newPoint;
         }
 
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
@@ -408,9 +555,15 @@ namespace PracticalControls.Controls
 
     public class PloylineDragEventArgs : RoutedEventArgs
     {
+        public double HorizontalChange { get; set; }
+
+        public double VerticalChange { get; set; }
+
         public int PointIndex { get; set; }
 
-        public Point Point { get; set; }
+        public Point OldPoint { get; set; }
+
+        public Point NewPoint { get; set; }
 
         public PloylineDragEventArgs()
         {
@@ -426,5 +579,12 @@ namespace PracticalControls.Controls
         {
 
         }
+    }
+
+    public enum DragMode
+    {
+        Both,
+        Horizontal,//Only support Horizontal drag
+        Vertical,//Only support Vertical drag
     }
 }
